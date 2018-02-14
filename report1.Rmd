@@ -333,7 +333,7 @@ flag=c(F,F,F)
 <b>Fuente: </b> Kantar Ibope  
 <b>Moneda: </b> `r params$moneda` en `r params$unidad`
 </div>
-<div align="center" style="float:right;width:35%;height:50%">`r img(src=paste('https://camedia1.shinyapps.io/Reportes/',as.character(params$cliente),'.png',sep=""))`</div><div align="center" style="float:left;width:35%;height:3"><br><br>`r img(src='https://camedia1.shinyapps.io/Reportes/camedia.png')`
+<div align="center" style="float:right;width:35%;height:50%">`r img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(params$cliente),'.png',sep=""))`</div><div align="center" style="float:left;width:35%;height:3"><br><br>`r img(src='https://camedia.shinyapps.io/Reportes/camedia.png')`
 </div> 
 <div style="clear:both"></div>
 <br>
@@ -625,7 +625,7 @@ cat("Day Parts según inversión")
 <center style="width:70%">
 ```{r echo=FALSE ,eval=flag2[1]}
 if(nrow(x)>=1){
-  img(src=paste('https://camedia1.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
 }
 ```
 </center>
@@ -653,7 +653,7 @@ if(nrow(x)>=1){
 <center style="width:70%">
 ```{r echo=FALSE,eval=flag2[1]}
 if(nrow(x)>=2){
-  img(src=paste('https://camedia1.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
 }
 ```
 </center>
@@ -680,7 +680,7 @@ if(nrow(x)>=2){
 <center style="width:70%">
 ```{r echo=FALSE ,eval=flag2[1]}
 if(nrow(x)>=3){
-  img(src=paste('https://camedia1.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
 }
 ```
 </center>
@@ -728,7 +728,7 @@ cat("Soporte de medios utilizados por los principales Anunciantes ", params$mes_
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE,out.width="50%",eval=flag2[1]}
-img(src='https://camedia1.shinyapps.io/Reportes/TELEVISION.png')
+img(src='https://camedia.shinyapps.io/Reportes/TELEVISION.png')
 ```
 </center>
 </div>
@@ -771,7 +771,7 @@ if("TV"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:20%">
 <center style="width:70%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -795,7 +795,7 @@ kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",
 <td align="center" >
 <center style="width:70%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -819,7 +819,7 @@ kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",
 <td align="center">
 <center style="width:70%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -848,7 +848,7 @@ kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE}
-img(src='https://camedia1.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
+img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
 ```
 </center>
 </div>
@@ -886,7 +886,7 @@ if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:30%">
 <center style="width:46%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -904,7 +904,7 @@ table[[1]]
 <td align="center" >
 <center style="width:46%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -922,7 +922,7 @@ table[[2]]
 <td align="center">
 <center style="width:46%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -945,7 +945,7 @@ table[[3]]
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE}
-img(src='https://camedia1.shinyapps.io/Reportes/PRENSA.png')
+img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
 ```
 </center>
 </div>
@@ -982,7 +982,7 @@ if("PRENSA"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:50%">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1000,7 +1000,7 @@ table[[1]]
 <td align="center" >
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1018,7 +1018,7 @@ table[[2]]
 <td align="center">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1041,7 +1041,7 @@ table[[3]]
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE}
-img(src='https://camedia1.shinyapps.io/Reportes/CINES.png')
+img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
 ```
 </center>
 </div >
@@ -1078,7 +1078,7 @@ if("CINES"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:50%">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1096,7 +1096,7 @@ table[[1]]
 <td align="center" >
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1114,7 +1114,7 @@ table[[2]]
 <td align="center">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1137,7 +1137,7 @@ table[[3]]
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE}
-img(src='https://camedia1.shinyapps.io/Reportes/RADIO.png')
+img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
 ```
 </center>
 </div>
@@ -1175,7 +1175,7 @@ if("RADIO"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:50%">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1193,7 +1193,7 @@ table[[1]]
 <td align="center" >
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1211,7 +1211,7 @@ table[[2]]
 <td align="center">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1234,7 +1234,7 @@ table[[3]]
 <div align="center">
 <center style="width:15%">
 ```{r echo=FALSE}
-img(src='https://camedia1.shinyapps.io/Reportes/REVISTAS.png')
+img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
 ```
 </center>
 </div>
@@ -1271,7 +1271,7 @@ if("REVISTA"%in%data_2$Tipo.de.Medio){
 <td align="center" style="width:50%">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[1]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1289,7 +1289,7 @@ table[[1]]
 <td align="center" >
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[2]}
-img(src=paste('https://camedia1.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
 ```
 </center>
 </td>
@@ -1307,7 +1307,7 @@ table[[2]]
 <td align="center">
 <center style="width:45%">
 ```{r echo=FALSE,eval=flag[3]}
-img(src=paste(src='https://camedia1.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+img(src=paste(src='https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
 ```
 </center>
 </td>

@@ -23,7 +23,6 @@ library(stringi)
 library(DT)
 
 
-
 ########################################################
 ## Lectura de las bases y desegregacion por categoria ##
 ########################################################
@@ -329,7 +328,10 @@ server <- function(input, output) {
     # the argument 'file'.
     content = function(file) {
       s=input$dataset_rows_all
-      write.csv(datasetInput1()[s,,drop=FALSE],file,row.names = F)
+      write.csv(datasetInput1()[s,,drop=FALSE],file,row.names = F,
+                col.names = c("Anno","Mes","Categoria","Marca","Anunciante",
+                              "Tipo.de.Medio","Medio","Producto",
+                              "Version","Franja","Duracion","Msj","INV.Dolar","INV","TRP"))
       
     }
   )

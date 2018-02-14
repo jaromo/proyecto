@@ -1,0 +1,12 @@
+name: reportes
+title: Reportes
+username:
+account: camedia
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 280566
+bundleId: 1222187
+url: https://camedia.shinyapps.io/Reportes/
+when: 1518587668.38206
+asMultiple: FALSE
+asStatic: FALSE

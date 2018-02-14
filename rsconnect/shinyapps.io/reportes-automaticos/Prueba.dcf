@@ -1,0 +1,12 @@
+name: Prueba
+title: Prueba
+username:
+account: reportes-automaticos
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 256121
+bundleId: 1183545
+url: https://camedia.shinyapps.io/Prueba/
+when: 1516385946.63923
+asMultiple: FALSE
+asStatic: FALSE

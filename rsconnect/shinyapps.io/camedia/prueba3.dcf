@@ -1,0 +1,12 @@
+name: prueba3
+title: Prueba
+username:
+account: camedia
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 263337
+bundleId: 1195429
+url: https://camedia.shinyapps.io/prueba3/
+when: 1517042633.16374
+asMultiple: FALSE
+asStatic: FALSE

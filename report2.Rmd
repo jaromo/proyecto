@@ -1,0 +1,387 @@
+---
+params:
+  cliente:
+    value: NA
+  ano:
+    value: NA
+  mes_in:
+    value: NA
+  mes_fin:
+    value: NA
+  moneda:
+    value: NA
+  base:
+    value: NA
+  mes_i:
+    value: NA
+  mes_f:
+    value: NA
+  unidad:
+    value: NA
+  base1:
+    value: NA
+output: 
+  html_document:
+    self-contained: TRUE
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r,echo=FALSE}
+
+base1=params$base1
+data=params$base
+
+########################
+## DEFINIR EL CLIENTE ##
+########################
+
+
+cat="BANCA"
+cat2=data$Categoría[data$Año==as.numeric(params$ano) & data$Mes<=params$mes_f & data$Mes>=params$mes_i]
+
+target="Personas 18-44"
+
+
+
+##################
+##################
+## LEER LA BASE ##
+base1=params$base1
+data=params$base
+names(base1)=c("Año","Mes","Categoría","INV.Dólar","INV")
+data$Tipo.de.Medio=as.character(data$Tipo.de.Medio)
+data$Tipo.de.Medio[data$Tipo.de.Medio=="TELEVISION NACIONAL"]="TV NACIONAL"
+data$Tipo.de.Medio=as.factor(data$Tipo.de.Medio)
+
+
+if(params$unidad=="Miles"){
+data$INV.Dólar=data$INV.Dólar/1000
+data$INV=data$INV/1000
+base1$INV=base1$INV/1000
+base1$INV.Dólar=base1$INV.Dólar/1000
+}
+
+
+###################################################
+## SE DEFINE LA MONEDA Y SE CALCULA LA INVERSION ##        
+###################################################
+
+if(params$moneda=="Dólares"){
+  ICant=round(sum(data$INV.Dólar[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]),0)
+}else{
+  ICant=round(sum(data$INV[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]),0)
+}
+
+if(params$moneda=="Dólares"){
+  ICact=round(sum(data$INV.Dólar[data$Año==as.numeric(params$ano) & data$Mes<=params$mes_f & data$Mes>=params$mes_i]),0)
+}else{
+  ICact=round(sum(data$INV[data$Año==as.numeric(params$ano) & data$Mes<=params$mes_f & data$Mes>=params$mes_i]),0)
+}
+
+varIC=round(((ICact/ICant)-1)*100,0)
+
+
+
+if(params$moneda=="Dólares"){
+  IIant=round(sum(base1$INV.Dólar[base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f &base1$Mes>=params$mes_i]),0)
+}else{
+  IIant=round(sum(base1$INV[base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
+}
+
+if(params$moneda=="Dólares"){
+  IIact=round(sum(base1$INV.Dólar[base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f  & base1$Mes>=params$mes_i]),0)
+}else{
+  IIact=round(sum(base1$INV[base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
+}
+
+varII=round(((IIact/IIant)-1)*100,0)
+
+if(params$moneda=="Dólares"){
+  moneda= "USD"
+}else{
+  moneda="CRC"
+}
+
+#########################################
+## SE CALCULA EL MEDIA MIX DEL PERIODO ##
+#########################################
+
+
+tipomedio=data$Tipo.de.Medio
+
+m1=m2=m=0
+
+for(i in 1:length(levels(tipomedio))){
+  m1[i]=sum(data$INV.Dólar[data$Año==(as.numeric(params$ano)-1) & data$Mes<=12 & data$Mes>=1 & data$Tipo.de.Medio==levels(tipomedio)[i]])
+}
+m1=data.frame(rep(paste("Enero a Diciembre" ,as.numeric(params$ano)-1 ), length(levels(tipomedio))) ,levels(tipomedio),m1)
+names(m1)=c("Periodo","TipoMedio","Inversión")
+m1$Inversión=m1$Inversión/sum(m1$Inversión)*100
+
+
+for(i in 1:length(levels(tipomedio))){
+  m2[i]=sum(data$INV.Dólar[data$Año==(as.numeric(params$ano)-1) & data$Mes<=params$mes_f & data$Mes>=params$mes_i & data$Tipo.de.Medio==levels(tipomedio)[i]])
+}
+m2=data.frame(rep(paste(params$mes_in,"a",params$mes_fin,as.numeric(params$ano)-1),length(levels(tipomedio))),levels(tipomedio),m2)
+names(m2)=c("Periodo","TipoMedio","Inversión")
+m2$Inversión=m2$Inversión/sum(m2$Inversión)*100
+
+
+for(i in 1:length(levels(tipomedio))){
+  m[i]=sum(data$INV.Dólar[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i & data$Tipo.de.Medio==levels(tipomedio)[i]])
+}
+m=data.frame(rep(paste(params$mes_in,"a",params$mes_fin,params$ano),length(levels(tipomedio))),levels(tipomedio),m)
+names(m)=c("Periodo","TipoMedio","Inversión")
+m$Inversión=m$Inversión/sum(m$Inversión)*100
+
+if(params$mes_i==1 & params$mes_f==12){
+  m3=rbind.data.frame(m1,m)
+}else{
+  m3=rbind.data.frame(m1,m2,m)
+}
+
+
+###################################################
+## SE DEFINE SI SE TOMA EL ANUNCIANTE O LA MARCA ##
+###################################################
+
+
+data$Anunciante=as.factor(as.character(data$Anunciante))
+data$Anunciante=as.character(data$Anunciante)
+data$Anunciante[data$Anunciante%in%c("BANCO SJ","CREDOMATIC")]="BAC"
+data$Anunciante=as.factor(data$Anunciante)
+
+
+z=numeric()
+for(i in 1:length(levels(data$Tipo.de.Medio))){
+  z[i]=sum(data$INV.Dólar[(data$Tipo.de.Medio==levels(data$Tipo.de.Medio)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i])  
+}
+z=data.frame(levels(data$Tipo.de.Medio),z)
+z=z[order(-z$z),]
+names(z)=c("Medio","Porcentaje")
+z$Porcentaje=round(z$Porcentaje/sum(z$Porcentaje)*100,2)
+z=z[z$Porcentaje!=0,]
+
+#############################################
+## ds  ##
+#############################################
+
+medios=as.character(data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"])
+medios=strsplit(medios,". ")
+medios=unlist(lapply(medios, function(x) x[[1]]))
+medios=strsplit(medios,"-")
+medios=unlist(lapply(medios, function(x) x[[1]]))
+medios[medios=="CT"]="CABLETICA"
+medios[medios=="TC"]="TELECABLE"
+medios[medios=="TELECABL"]="TELECABLE"
+medios[medios=="CABL"]="CABLETICA"
+medios[medios=="TI"]="TIGO"
+data$Medio=as.character(data$Medio)
+data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"]=medios
+medios=as.factor(as.character(data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"]))
+
+
+if(params$mes_f==12){
+  FLAG1=F
+  peso=0
+  tamano=700
+}else{
+  FLAG1=T
+  peso=35
+  tamano=1000
+} 
+base1=base1[-(which(base1$Categoría=="PROGRAMACION")),]
+base1=base1[-(which(base1$Categoría=="ESTADO")),]
+base1=base1[-(which(base1$Categoría=="EVENTOS")),]
+base1=base1[-(which(base1$Categoría=="MINISTERIOS")),]
+base1=base1[-(which(base1$Categoría=="ONG")),]
+base1=base1[-(which(base1$Categoría=="ASOCIACIONES")),]
+base1=base1[-(which(base1$Categoría=="VARIOS")),]
+base1=base1[-(which(base1$Categoría=="CAMPANAS BIEN SOCI")),]
+base1=base1[-(which(base1$Categoría=="SITIOS")),]
+base1=base1[-(which(base1$Categoría=="DIARIOS")),]
+base1=base1[-(which(base1$Categoría=="ADMINISTRATIVOS")),]
+base1=base1[-(which(base1$Categoría=="FUNDACIONES")),]
+base1$Categoría=as.factor(as.character(base1$Categoría))
+flag=c(F,F,F)
+```
+
+<center><h1>Visualización Industria Publicitaria</h1></center>  
+<br>
+<div style="clear:both"></div>
+<div style="float:left;width:25%">
+<br>
+<b>Sector: </b>`r cat`  
+<b>Periodo: </b> `r params$mes_in` a `r params$mes_fin` `r params$ano`  
+<b>Target: </b>`r target`  
+<b>Fuente: </b> Kantar Ibope  
+<b>Moneda: </b> `r params$moneda` en `r params$unidad`
+</div>
+<div align="center" style="float:right;width:35%;height:50%">`r img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(params$cliente),'.png',sep=""))`</div><div align="center" style="float:left;width:35%;height:3"><br><br>`r img(src='https://camedia.shinyapps.io/Reportes/camedia.png')`
+</div> 
+<div style="clear:both"></div>
+<br>
+<br>
+<p> En el periodo `r params$mes_in` a `r params$mes_fin` `r as.numeric(params$ano)-1` la inversión en publicidad de la industria en Costa Rica fue de `r format(IIant,big.mark=",")` `r moneda`, mientras que para el mismo periodo en el `r params$ano` fue de `r format(IIact,big.mark=",")` `r moneda`, lo que equivale a una variación del `r varII`\%. </p>
+<br>
+<br>
+<center><h3>**Industria**</h3></center>
+<br>
+<center>
+<table cellpadding="5" width="`r tamano`px">
+<tr>
+<td width="`r peso`%" align="center" valign="top">
+<center><h4><strong>
+```{r echo=FALSE,eval=FLAG1,results='asis'}
+cat("Principales categorías en el ",as.numeric(params$ano)-1)
+```
+</strong></h4></center><br><br>
+```{r echo=FALSE,eval=FLAG1}
+p=data.table(base1[base1$Año==as.numeric(params$ano)-1 & base1$Mes<=12 & base1$Mes>=1,])
+p=data.table(p)
+if(params$moneda=="Colones"){
+  p=p[,list(Inversión=sum(INV)),by=Categoría]
+}else{
+  p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
+}
+p=p[order(-p$Inversión),]
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
+kable(head(p,10),format="html",row.names = F)%>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+</td>
+
+<td align="center" valign="top">
+<center><h4>**Principales categorías de `r params$mes_in` a `r params$mes_fin` `r as.numeric(params$ano)-1`**</h4></center><br>
+```{r echo=FALSE}
+#Evolucion de la categoria
+p=data.table(base1[base1$Año==(as.numeric(params$ano)-1) & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i,])
+p=data.table(p)
+if(params$moneda=="Colones"){
+  p=p[,list(Inversión=sum(INV)),by=Categoría]
+}else{
+  p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
+}
+p=p[order(-p$Inversión),]
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
+kable(head(p,10),format="html",row.names = F)%>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+</td>
+
+<td align="center" valign="top">
+<center><h4>**Principales categorías de `r params$mes_in` a `r params$mes_fin` `r params$ano`**</h4></center><br>
+```{r echo=FALSE}
+#Evolucion de la categoria
+p=data.table(base1[base1$Año==params$ano & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i,])
+p=data.table(p)
+if(params$moneda=="Colones"){
+  p=p[,list(Inversión=sum(INV)),by=Categoría]
+}else{
+  p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
+}
+p=p[order(-p$Inversión),]
+
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
+kable(head(p,10),format="html",row.names = F)%>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+</td>
+</tr>
+</table>
+</center>
+<div style="clear:both"></div>
+
+<br>
+<center><h3>**Sector**</h3></center>
+<br>
+<p>
+Para este periodo el sector **`r cat`** tuvo una inversión en el `r as.numeric(params$ano)-1` de `r format(ICant,big.mark=",")` `r moneda`, mientras que en el `r params$ano` la inversión es de `r format(ICact,big.mark=",")` `r moneda` lo cual indica una variación del `r varIC`\% </p>
+
+<br>
+<br>
+<div align="center" style="float:left;width:50%"><center><h4>**Principales categorías que conforman el sector `r cat` en el periodo `r params$mes_in` a `r params$mes_fin` `r params$ano`**</h4></center><br>
+```{r echo=FALSE}
+#Conformacion de la categoria
+p=data.table(base1[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes>=params$mes_i & base1$Mes<=params$mes_f,])
+p=data.table(p)
+if(params$moneda=="Colones"){
+  p=p[,list(Inversión=sum(INV)),by=Categoría]
+}else{
+  p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
+}
+p=p[order(-p$Inversión),]
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
+kable(head(p,10),format="html",row.names = F)%>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+</div>
+<div align="center" style="float:right;width:50%"><center><h4>**Evolución del sector `r cat`**</h4></center><br> 
+```{r echo=FALSE}
+MES=c("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre")
+his=0
+his1=0
+if(params$moneda=="Colones"){
+  for(i in 1:params$mes_f){
+    if(i%in%base1$Mes){
+    his[i]=sum(base1$INV[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes==i])
+    }else{
+      his[i]=0
+    }
+  }
+}else{
+  for(i in 1:params$mes_f){
+    if(i%in%base1$Mes){
+    his[i]=sum(base1$INV.Dólar[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes==i])
+    }else{
+      his[i]=0
+    }
+  }    
+}
+if(params$moneda=="Colones"){
+  for(i in 1:params$mes_f){
+    if(i%in%base1$Mes){
+    his1[i]=sum(base1$INV[base1$Categoría%in%data$Categoría[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i] & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    }else{
+      his1[i]=0
+    }
+  }
+}else{
+  for(i in 1:params$mes_f){
+    if(i%in%base1$Mes){
+    his1[i]=sum(base1$INV.Dólar[base1$Categoría%in%data$Categoría[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i] & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    }else{
+      his1[i]=0
+    }
+  }    
+}
+
+var1=round((his/his1-1)*100,0)
+
+his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),format(his[1:params$mes_f],big.mark = ","),var1)
+names(his)=c("Mes",paste("Inversión",as.numeric(params$ano)-1),paste("Inversión",params$ano),"Variación")
+kable(his,format="html",row.names = F)%>%
+  kable_styling(bootstrap_options = "striped",
+                full_width = F)
+```
+
+</div> 
+<div style="clear:both"></div>
+<br>
+En este periodo la principal categoría es **`r as.character(p$Categoría[1])`**, con una inversión de `r p$Inversión[1]` `r moneda`
+
+<div align="center" >
+<center><h4>**Media Mix del sector `r cat`**</h4></center><br>
+```{r, echo=FALSE,fig.height=7}
+ggplot(data=m3[which(m3$Inversión>=0.5),],aes(y=Inversión , x=Periodo, fill=TipoMedio))+geom_bar(position = "stack",stat = "identity")+geom_text(aes(label=paste(round(Inversión,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.y= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=10),axis.text.x = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.y = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL) 
+```
+</div> 
+<div style="clear:both"></div>
+<br>
+En el periodo `r params$mes_in` a `r params$mes_fin` `r params$ano` el MEDIA MIX del sector muestra que el medio primario es **`r stri_trans_totitle(z$Medio[1])`**

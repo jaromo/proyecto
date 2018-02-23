@@ -38,9 +38,16 @@ base_banca=base[base$Categoria%in%c("CAPTACION DINERO","SEGUROS","TARJETAS CREDI
                                    "TARJETAS CRED AFIL",	"CREDITO EMPRESARIA",	"FACTOREO",
                                    "LEASING",	"SEGUROS AUTOMOVILE",	"ENVIOS DE DINERO",	"CREDITO PRENDARIO",
                                    "BANCA CAJEROS AUTO"	,"BANCA EMPRESARIAL",	"SEGUROS GASTOS MED",	
-                                   "PUBLICIDAD COOPERA",	"BANCA DE INVERSION",	"TARJETAS CRED MARC",
+                                   "BANCA DE INVERSION",	"TARJETAS CRED MARC",
                                    "BANCA ACTUAL.DATOS",	"TARJETAS DEBITO",	"TARJETAS DEB COMER",
-                                   "CERTIFICADOS INVER"),c(1:14,18)]
+                                   "CERTIFICADOS INVER") | base$Anunciante %in% c("CREDOMA CIA NAL CHOC",
+                                                                                  "BANCO SJ CINEPOLIS",
+                                                                                  "BANCO SJ SODA TAP",
+                                                                                  "BCO NAL C RIT",
+                                                                                  "CREDOMA CIA NAL CHOC",
+                                                                                  "CREDOMATIC CINEPOLIS",
+                                                                                  "OFFICE D CREDOMAT",
+                                                                                  "VISA   INTERNACION"),c(1:14,18)]
 base_frijoles=base[base$Categoria%in%c("FRIJOLES EN GRANO"),c(1:15)]
 base_arroz=base[base$Categoria%in%c("ARROZ"),c(1:15)]
 base_restaurantes=base[base$Categoria%in%c("FAST FOOD HAMBURGU",	"FAST FOOD TACO",	"FAST FOOD CASUAL",
@@ -62,6 +69,18 @@ base_fifcoAgua=base[base$Categoria%in%"AGUA PURA",c(1:14,21)]
 base_fifcoJugos=base[base$Categoria%in%c("JUGOS","REFRESCOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES",
                                          "REFRESCOS DE TE","BEBIDAS NATURALES"),c(1:14,22)]
 base_fifcoEnergizantes=base[base$Categoria%in%"BEBIDAS ENERGIZANT",c(1:14,16)]
+base_creditos_personales=base[base$Categoria%in%"CREDITO PERSONAL",c(1:14,18)]
+base_tarjetas_credito=base[base$Categoria%in%"TARJETAS CREDITO",c(1:14,18)]
+base_credito_vivienda=base[base$Categoria%in%"CREDITO VIVIENDA",c(1:14,18)]
+base_cuenta_ahorro=base[base$Categoria%in%"CUENTA DE AHORRO",c(1:14,18)]
+base_cooperativa=base[base$Categoria%in%"COOPERATIVAS",c(1:14,18)]
+base_ins=base_ins[base_ins$Anunciante %in% c("BCO LAFISE","BCO LAFISE INT","LAFISE","INST NAL SEGUROS","ASSA SEGUROS","BMI",
+                                             "MAGISTERIO NACIONA","MAGISTERIO NACIONAL","PAN AMERICAN LIFE","QUALITAS","SAGICOR",
+                                             "BLUE CROSS BLUE SHIELD","TRIPLE S BLUE INC"),]
+base_ins$Anunciante=as.character(base_ins$Anunciante)
+base_ins$Anunciante[base_ins$Anunciante%in%c("MAGISTERIO NACIONA","MAGISTERIO NACIONAL")]="MAGISTERIO NACIONAL"
+base_ins$Anunciante=as.factor(base_ins$Anunciante)
+
 rm(base)
 
 #######################################
@@ -84,11 +103,14 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     
-    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BCR","Claro TV","Claro Movil","Cuestamoras",
+    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","Claro TV","Claro Movil","Cuestamoras",
                                                       "Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes",
-                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LANCO","Pizza Hut",
-                                                      "Rostipollos","SKY","Tio Pelon Arroz","Tio Pelon Frijoles",
-                                                      "Tio Pelon Salsa Inglesa","UCIMED")),
+                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LANCO","PIZZA HUT",
+                                                      "ROSTIPOLLOS","SKY","Tio Pelon Arroz","Tio Pelon Frijoles",
+                                                      "Tio Pelon Salsa Inglesa","UCIMED","COOPENAE BANCA",
+                                                      "COOPENAE CREDITOS PERSONALES","COOPENAE CREDITO DE VIVIENDA",
+                                                      "COOPENAE TARJETAS DE CREDITO","COOPENAE CUENTA DE AHORRO",
+                                                      "COOPENAE COOPERATIVAS")),
     
     
     
@@ -243,7 +265,7 @@ server <- function(input, output) {
     )
     switch(input$cliente,
            "BANCO POPULAR" = base_banca,
-           "BCR" = base_banca,
+           "BANCO DE CR" = base_banca,
            "Claro TV" = base_TV,
            "Claro Movil" = base_Movil,
            "Cuestamoras" = base_inmuebles,
@@ -262,7 +284,13 @@ server <- function(input, output) {
            "Tio Pelon Arroz" = base_arroz,
            "Tio Pelon Frijoles" = base_frijoles,
            "Tio Pelon Salsa Inglesa" =base_salsa,
-           "UCIMED" = base_universidad
+           "UCIMED" = base_universidad,
+           "COOPENAE BANCA"=base_banca,
+           "COOPENAE CREDITOS PERSONALES"=base_creditos_personales,
+           "COOPENAE CREDITO DE VIVIENDA"=base_credito_vivienda,
+           "COOPENAE TARJETAS DE CREDITO"=base_tarjetas_credito,
+           "COOPENAE CUENTA DE AHORRO"=base_cuenta_ahorro,
+           "COOPENAE COOPERATIVAS"=base_cooperativa
     )
   })
   
@@ -294,13 +322,16 @@ server <- function(input, output) {
       ## Indicar cual reporte le corresponde a cual cliente ##
       ########################################################
       
-      file.copy(switch(input$cliente,"BANCO POPULAR"= "report1.Rmd","BCR"= "report1.Rmd","Claro TV"= "report.Rmd",
+      file.copy(switch(input$cliente,"BANCO POPULAR"= "report1.Rmd","BANCO DE CR"= "report1.Rmd","Claro TV"= "report.Rmd",
                        "Claro Movil"= "report.Rmd","Fidelitas"= "report.Rmd","FIFCO Agua"= "report.Rmd",
                        "FIFCO Cerveza"= "report.Rmd","Cuestamoras"= "report2.Rmd","FIFCO Energizantes"= "report.Rmd",
-                       "FIFCO Jugos"= "report1.Rmd","HUAWEI"= "report.Rmd","IGT"= "report.Rmd","INS"= "report1.Rmd",
+                       "FIFCO Jugos"= "report1.Rmd","HUAWEI"= "report.Rmd","IGT"= "report.Rmd","INS"= "report3.Rmd",
                        "LANCO"= "report.Rmd","Pizza Hut"= "report1.Rmd","Rostipollos"= "report1.Rmd",
                        "SKY"= "report.Rmd","Tio Pelon Arroz"= "report.Rmd","Tio Pelon Frijoles"= "report.Rmd",
-                       "Tio Pelon Salsa Inglesa"= "report.Rmd","UCIMED"= "report.Rmd"), 
+                       "Tio Pelon Salsa Inglesa"= "report.Rmd","UCIMED"= "report.Rmd","COOPENAE BANCA"= "report2.Rmd",
+                       "COOPENAE CREDITOS PERSONALES"= "report.Rmd","COOPENAE CREDITO DE VIVIENDA"= "report.Rmd",
+                       "COOPENAE TARJETAS DE CREDITO"= "report.Rmd","COOPENAE CUENTA DE AHORRO"= "report.Rmd",
+                       "COOPENAE COOPERATIVAS"= "report.Rmd"), 
                 tempReport, overwrite = TRUE)
       
       # configurar los parametros para pasar al documento .Rmd

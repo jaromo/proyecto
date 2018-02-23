@@ -30,6 +30,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r,echo=FALSE}
 
+base1=params$base1
+data=params$base
 ########################
 ## DEFINIR EL CLIENTE ##
 ########################
@@ -44,21 +46,10 @@ if(params$cliente=="FIFCO Jugos") {
   cat="JUGOS Y REFRESCOS"
   cat2=c("JUGOS","REFRESCOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES","REFRESCOS DE TE","BEBIDAS NATURALES")}
 
-if(params$cliente%in%c("BANCO POPULAR","BCR")){
+if(params$cliente%in%c("BANCO POPULAR","BANCO DE CR")){
   cat="BANCA"
-  cat2=c("CAPTACION DINERO","SEGUROS","TARJETAS CREDITO","BANCA ELECTR CNCPT",
-         "BANCA IMAGEN","BANCA PAGOS SERVIC","CREDITO OTROS","CREDITO VIVIENDA",
-         "SERVICIOS PYMES",	"CUENTA DE AHORRO",	"SERVICIOS BANCARIO",
-         "BANCA ELECTR PERSO",	"PENSIONES",	"PUESTOS DE BOLSA",
-         "TARJETAS CRED COME",	"TARJETAS DEB AFILI",	"TARJETAS DEB EMISO",
-         "CREDITO PERSONAL",	"SEGUROS DE VIDA"	,"BANCA INTERNACIONA"	,
-         "TARJETAS CRED AFIL",	"CREDITO EMPRESARIA",	"FACTOREO",
-         "LEASING",	"SEGUROS AUTOMOVILE",	"ENVIOS DE DINERO",	"CREDITO PRENDARIO",
-         "BANCA CAJEROS AUTO"	,"BANCA EMPRESARIAL",	"SEGUROS GASTOS MED",	
-         "PUBLICIDAD COOPERA",	"BANCA DE INVERSION",	"TARJETAS CRED MARC",
-         "BANCA ACTUAL.DATOS",	"TARJETAS DEBITO",	"TARJETAS DEB COMER",
-         "CERTIFICADOS INVER")}
-if(params$cliente%in%c("Rostipollos","Pizza Hut")){
+  cat2=data$Categoría[data$Año==as.numeric(params$ano) & data$Mes<=params$mes_f & data$Mes>=params$mes_i]}
+if(params$cliente%in%c("ROSTIPOLLOS","PIZZA HUT")){
   cat="COMIDAS RAPIDAS"
   cat2=c("FAST FOOD HAMBURGU",	"FAST FOOD TACO",	"FAST FOOD CASUAL",
          "FAST FOOD SANDWICH",	"FAST FOOD POLLO",	"FAST FOOD PIZZA"	,
@@ -68,7 +59,7 @@ cat="BIENES RAICES"
 cat2=c("VIVIENDA","BIENES RAICES PLAY","BIENES RAICES","INMOBILIARIA VIVIE")}
 
 
-if(params$cliente%in%c("BCR","BANCO POPULAR","Rostipollos","Pizza Hut")){
+if(params$cliente%in%c("BANCO DE CR","BANCO POPULAR","ROSTIPOLLOS","PIZZA HUT")){
   target="Personas 18-44"
 }
 if(params$cliente%in%c("INS","Cuestamoras","FIFCO Jugos")){
@@ -95,12 +86,18 @@ data$Categoría[data$Categoría%in%c("JUGOS","REFRESCOS")]="JUGOS Y REFRESCOS"
 data$Categoría[data$Categoría%in%c("GASEOSOS CRISTALIN","GASEOSOS SABORES")]="GASEOSOS SABORES"
 data$Categoría=as.factor(data$Categoría)
 
+#################################################
+## SE DEFINE SI LA INV ES EN MILES O EN UNIDAD ##
+#################################################
+
 if(params$unidad=="Miles"){
 data$INV.Dólar=data$INV.Dólar/1000
 data$INV=data$INV/1000
 base1$INV=base1$INV/1000
 base1$INV.Dólar=base1$INV.Dólar/1000
 }
+
+
 ###################################################
 ## SE DEFINEN LOS ANUNCIANTES DE INTERES DEL INS ##
 ###################################################
@@ -130,15 +127,15 @@ varIC=round(((ICact/ICant)-1)*100,0)
 
 
 if(params$moneda=="Dólares"){
-  IIant=round(sum(base1$INV.Dólar[base1$Categoría!="PROGRAMACION" & base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f &base1$Mes>=params$mes_i]),0)
+  IIant=round(sum(base1$INV.Dólar[ base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f &base1$Mes>=params$mes_i]),0)
 }else{
-  IIant=round(sum(base1$INV[base1$Categoría!="PROGRAMACION" & base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
+  IIant=round(sum(base1$INV[ base1$Año==as.numeric(params$ano)-1 & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
 }
 
 if(params$moneda=="Dólares"){
-  IIact=round(sum(base1$INV.Dólar[base1$Categoría!="PROGRAMACION" &  base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f  & base1$Mes>=params$mes_i]),0)
+  IIact=round(sum(base1$INV.Dólar[  base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f  & base1$Mes>=params$mes_i]),0)
 }else{
-  IIact=round(sum(base1$INV[base1$Categoría!="PROGRAMACION" & base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
+  IIact=round(sum(base1$INV[ base1$Año==as.numeric(params$ano) & base1$Mes<=params$mes_f & base1$Mes>=params$mes_i]),0)
 }
 
 varII=round(((IIact/IIant)-1)*100,0)
@@ -193,18 +190,14 @@ if(params$mes_i==1 & params$mes_f==12){
 ###################################################
 
 
-if(params$cliente%in%c("BANCO POPULAR","INS","BCR")){
+if(params$cliente%in%c("BANCO POPULAR","INS","BANCO DE CR")){
   data$Anunciante=as.factor(as.character(data$Anunciante))
   data$Anunciante=as.character(data$Anunciante)
-  data$Anunciante[data$Anunciante%in%c("BANCO SJ","CREDOMATIC")]="BAC"
+  data$Anunciante[data$Anunciante%in%c("BANCO SJ")]="BAC"
   data$Anunciante=as.factor(data$Anunciante)
 }else{
   data$Anunciante=as.factor(as.character(data$Marca))
 }
-
-#############################################
-## ds  ##
-#############################################
 
 z=numeric()
 for(i in 1:length(levels(data$Tipo.de.Medio))){
@@ -216,6 +209,9 @@ names(z)=c("Medio","Porcentaje")
 z$Porcentaje=round(z$Porcentaje/sum(z$Porcentaje)*100,2)
 z=z[z$Porcentaje!=0,]
 
+#############################################
+## ds  ##
+#############################################
 
 medios=as.character(data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"])
 medios=strsplit(medios,". ")
@@ -231,72 +227,7 @@ data$Medio=as.character(data$Medio)
 data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"]=medios
 medios=as.factor(as.character(data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION"]))
 
-x=numeric()
-for(i in 1:length(levels(data$Anunciante))){
-  x[i]=sum(data$INV.Dólar[(data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i & (data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION")])  
-}
-x=data.frame(levels(data$Anunciante),x)
-x=x[order(-x$x),]
-x=x[x$x>0,]
-x$x=round(x$x/sum(x$x)*100,2)
-names(x)=c("Marca","Porcentaje")
-marca=as.character(x$Marca)
 
-
-l=0
-
-for(j in 1:3){
-  m=0
-  for(i in 1:length(levels(medios))){
-    m[i]=sum(data$INV.Dólar[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i &
-                              (data$Tipo.de.Medio=="TV NACIONAL" |
-                                 data$Tipo.de.Medio=="TV SUSCRIPCION") &
-                              data$Anunciante==as.character(x$Marca[j]) & data$Medio==levels(medios)[i]])
-  }
-  m=data.frame(levels(medios),m)
-  m=m[m[,2]>0,]
-  names(m)=c("Medio","Inversión")
-  l[j]=paste(m$Medio,collapse = ", ")
-}
-
-dur=0
-duracion=as.factor(data$Duración)
-
-for(j in 1:3){
-  m=0
-  for(i in 1:length(levels(duracion))){
-    m[i]=sum(data$INV.Dólar[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i &
-                              (data$Tipo.de.Medio=="TV NACIONAL" |
-                                 data$Tipo.de.Medio=="TV SUSCRIPCION") &
-                              data$Anunciante==as.character(x$Marca[j]) & data$Duración==levels(duracion)[i]])
-  }
-  m=data.frame(levels(duracion),m)
-  m=m[m[,2]>0,]
-  m=as.numeric(as.character(m[m[,2]>0,1]))
-  m=m[order(m)]
-  m[m==11]=10
-  m=m[m%%5==0]
-  dur[j]=paste(m,collapse = ", ")
-}
-
-fra=list()
-franja=as.factor(as.character(data$Franja[data$Tipo.de.Medio=="TV NACIONAL" |
-                                            data$Tipo.de.Medio=="TV SUSCRIPCION"]))
-for(j in 1:3){
-  m=0
-  for(i in 1:length(levels(franja))){
-    m[i]=sum(data$INV.Dólar[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i &
-                              (data$Tipo.de.Medio=="TV NACIONAL" |
-                                 data$Tipo.de.Medio=="TV SUSCRIPCION") &
-                              data$Anunciante==as.character(x$Marca[j]) & data$Franja==levels(franja)[i]])
-  }
-  m=data.frame(levels(franja),m)
-  names(m)=c("Franja","Porcentaje")
-  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
-  m=m[order(m$Franja),]
-  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
-  fra[[j]]=m
-}
 if(params$mes_f==12){
   FLAG1=F
   peso=0
@@ -361,7 +292,7 @@ if(params$moneda=="Colones"){
   p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
 }
 p=p[order(-p$Inversión),]
-p$Inversión=format(p$Inversión,big.mark = ",")
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
                 full_width = F)
@@ -380,7 +311,7 @@ if(params$moneda=="Colones"){
   p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
 }
 p=p[order(-p$Inversión),]
-p$Inversión=format(p$Inversión,big.mark = ",")
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
                 full_width = F)
@@ -399,8 +330,8 @@ if(params$moneda=="Colones"){
   p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
 }
 p=p[order(-p$Inversión),]
-x1=which(p$Categoría==cat)
-p$Inversión=format(p$Inversión,big.mark = ",")
+
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
                 full_width = F)
@@ -415,7 +346,7 @@ kable(head(p,10),format="html",row.names = F)%>%
 <center><h3>**Sector**</h3></center>
 <br>
 <p>
-Para este periodo la categoría **`r cat`** tuvo una inversión en el `r as.numeric(params$ano)-1` de `r format(ICant,big.mark=",")` `r moneda`, mientras que en el `r params$ano` la inversión es de `r format(ICact,big.mark=",")` `r moneda` lo cual indica una variación del `r varIC`\% </p>
+Para este periodo el sector **`r cat`** tuvo una inversión en el `r as.numeric(params$ano)-1` de `r format(ICant,big.mark=",")` `r moneda`, mientras que en el `r params$ano` la inversión es de `r format(ICact,big.mark=",")` `r moneda` lo cual indica una variación del `r varIC`\% </p>
 
 <br>
 <br>
@@ -425,12 +356,12 @@ Para este periodo la categoría **`r cat`** tuvo una inversión en el `r as.nume
 p=data.table(base1[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes>=params$mes_i & base1$Mes<=params$mes_f,])
 p=data.table(p)
 if(params$moneda=="Colones"){
-  p1=p[,list(Inversión=sum(INV)),by=Categoría]
+  p=p[,list(Inversión=sum(INV)),by=Categoría]
 }else{
   p=p[,list(Inversión=sum(INV.Dólar)),by=Categoría]
 }
 p=p[order(-p$Inversión),]
-p$Inversión=format(p$Inversión,big.mark = ",")
+p$Inversión=format(round(p$Inversión,2),big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
                 full_width = F)
@@ -461,7 +392,7 @@ if(params$moneda=="Colones"){
 if(params$moneda=="Colones"){
   for(i in 1:params$mes_f){
     if(i%in%base1$Mes){
-    his1[i]=sum(base1$INV[base1$Categoría%in%cat2 & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    his1[i]=sum(base1$INV[base1$Categoría%in%data$Categoría[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i] & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
     }else{
       his1[i]=0
     }
@@ -469,7 +400,7 @@ if(params$moneda=="Colones"){
 }else{
   for(i in 1:params$mes_f){
     if(i%in%base1$Mes){
-    his1[i]=sum(base1$INV.Dólar[base1$Categoría%in%cat2 & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    his1[i]=sum(base1$INV.Dólar[base1$Categoría%in%data$Categoría[data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i] & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
     }else{
       his1[i]=0
     }
@@ -518,6 +449,79 @@ if(length(p$Categoría)<5){
 ```{r echo=FALSE}
 flag=c(F,F,F)
 ```
+
+```{r echo=FALSE, eval=flag2[1]}
+
+data3=data[data$Categoría==as.character(p$Categoría[1]),]
+data3$Anunciante=as.factor(as.character(data3$Anunciante))
+medios=as.factor(as.character(data3$Medio[data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+x=numeric()
+for(i in 1:length(levels(data3$Anunciante))){
+  x[i]=sum(data3$INV.Dólar[(data3$Anunciante==levels(data3$Anunciante)[i]) & data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i & (data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION")])  
+}
+x=data.frame(levels(data3$Anunciante),x)
+x=x[order(-x$x),]
+x=x[x$x>0,]
+x$x=round(x$x/sum(x$x)*100,2)
+names(x)=c("Marca","Porcentaje")
+marca=as.character(x$Marca)
+
+
+l=0
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(medios))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Medio==levels(medios)[i]])
+  }
+  m=data.frame(levels(medios),m)
+  m=m[m[,2]>0,]
+  names(m)=c("Medio","Inversión")
+  l[j]=paste(m$Medio,collapse = ", ")
+}
+
+dur=0
+duracion=as.factor(as.character(data3$Duración))
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(duracion))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Duración==levels(duracion)[i]])
+  }
+  m=data.frame(levels(duracion),m)
+  m=m[m[,2]>0,]
+  m=as.numeric(as.character(m[m[,2]>0,1]))
+  m=m[order(m)]
+  m[m==11]=10
+  m=m[m%%5==0]
+  dur[j]=paste(m,collapse = ", ")
+}
+
+fra=list()
+franja=as.factor(as.character(data3$Franja[data3$Tipo.de.Medio=="TV NACIONAL" |
+                                            data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(franja))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Franja==levels(franja)[i]])
+  }
+  m=data.frame(levels(franja),m)
+  names(m)=c("Franja","Porcentaje")
+  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
+  m=m[order(m$Franja),]
+  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
+  fra[[j]]=m
+}
+```
 <center><h3>
 ```{r echo=F, eval=flag2[1], results='asis'}
 cat(as.character(as.character(p$Categoría[1])))
@@ -529,7 +533,7 @@ cat(as.character(as.character(p$Categoría[1])))
 cat("Marca")
 ```
 </h3></center>
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 x2=numeric()
 x3=numeric()
 if(params$moneda=="Dólares"){
@@ -558,11 +562,12 @@ data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
 data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
 data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
 data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+
 temp=""
 if(length(data1$Anunciante)>3){
   for(i in 1:3){
     temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
-    temp2=paste(temp2," ","(",x2$Variación[i],"%)",sep="")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
     if(3==i){
       temp3=" y "
     }else{
@@ -576,8 +581,8 @@ if(length(data1$Anunciante)>3){
   }
 }else{
   for(i in 1:length(data1$Anunciante)){
-    temp2=paste(data1$Anunciante[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
-    temp2=paste(temp2," ","(",x2$Variación[i],")",sep="")
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
     if(length(x2$Marca)==i){
       temp3=" y "
     }else{
@@ -593,7 +598,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[1],results='asis'}
-cat("La inversión registrada en ",cat," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",p$Categoría[1]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>
@@ -709,8 +714,8 @@ if(nrow(x)>=3){
 
 
 
-```{r echo=FALSE,results='asis'}
-data2=data[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+```{r echo=FALSE,results='asis',eval=flag2[1]}
+data2=data[data$Categoría==as.character(p$Categoría[1]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
 data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
 data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
@@ -847,7 +852,7 @@ kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",
 <br>
 <div align="center">
 <center style="width:15%">
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
 ```
 </center>
@@ -857,6 +862,9 @@ img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
 
 ```{r echo=FALSE}
 flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[1]}
 if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
@@ -944,7 +952,7 @@ table[[3]]
 <br>
 <div align="center">
 <center style="width:15%">
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
 ```
 </center>
@@ -953,6 +961,10 @@ img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
 <br>
 ```{r echo=FALSE}
 flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[1]}
+
 if("PRENSA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="PRENSA",]
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
@@ -1040,15 +1052,19 @@ table[[3]]
 <br>
 <div align="center">
 <center style="width:15%">
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
 ```
 </center>
 </div >
 <br>
 <br>
-```{r echo=FALSE, results='asis',results='asis'}
+```{r echo=FALSE}
 flag=c(F,F,F)
+```
+
+```{r echo=FALSE, results='asis',eval=flag2[1]}
+
 if("CINES"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="CINES",]
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
@@ -1136,16 +1152,19 @@ table[[3]]
 <br>
 <div align="center">
 <center style="width:15%">
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
 ```
 </center>
 </div>
 <br>
 <br>
-
 ```{r echo=FALSE}
 flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[1]}
+
 if("RADIO"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="RADIO",]
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
@@ -1233,15 +1252,3622 @@ table[[3]]
 <br>
 <div align="center">
 <center style="width:15%">
-```{r echo=FALSE}
+```{r echo=FALSE,eval=flag2[1]}
 img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
 ```
 </center>
 </div>
 <br>
 <br>
-```{r echo=FALSE,results='asis'}
+```{r echo=FALSE}
 flag=c(F,F,F)
+```
+
+```{r echo=FALSE,results='asis',eval=flag2[1]}
+if("REVISTA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))>=3){
+    cont=3
+  }else{
+    cont=length(levels(data_4$Anunciante))
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Revistas para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste(src='https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, eval=flag2[2]}
+data3=data[data$Categoría==as.character(p$Categoría[2]),]
+data3$Anunciante=as.factor(as.character(data3$Anunciante))
+medios=as.factor(as.character(data3$Medio[data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+x=numeric()
+for(i in 1:length(levels(data3$Anunciante))){
+  x[i]=sum(data3$INV.Dólar[(data3$Anunciante==levels(data3$Anunciante)[i]) & data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i & (data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION")])  
+}
+x=data.frame(levels(data3$Anunciante),x)
+x=x[order(-x$x),]
+x=x[x$x>0,]
+x$x=round(x$x/sum(x$x)*100,2)
+names(x)=c("Marca","Porcentaje")
+marca=as.character(x$Marca)
+
+
+l=0
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(medios))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Medio==levels(medios)[i]])
+  }
+  m=data.frame(levels(medios),m)
+  m=m[m[,2]>0,]
+  names(m)=c("Medio","Inversión")
+  l[j]=paste(m$Medio,collapse = ", ")
+}
+
+dur=0
+duracion=as.factor(as.character(data3$Duración))
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(duracion))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Duración==levels(duracion)[i]])
+  }
+  m=data.frame(levels(duracion),m)
+  m=m[m[,2]>0,]
+  m=as.numeric(as.character(m[m[,2]>0,1]))
+  m=m[order(m)]
+  m[m==11]=10
+  m=m[m%%5==0]
+  dur[j]=paste(m,collapse = ", ")
+}
+
+fra=list()
+franja=as.factor(as.character(data3$Franja[data3$Tipo.de.Medio=="TV NACIONAL" |
+                                            data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(franja))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Franja==levels(franja)[i]])
+  }
+  m=data.frame(levels(franja),m)
+  names(m)=c("Franja","Porcentaje")
+  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
+  m=m[order(m$Franja),]
+  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
+  fra[[j]]=m
+}
+```
+<center><h3>
+```{r echo=F, eval=flag2[2], results='asis'}
+cat(as.character(as.character(p$Categoría[2])))
+```
+</h3></center>
+
+<center><h3>
+```{r echo=FALSE,results='asis',eval=flag2[2] }
+cat("Marca")
+```
+</h3></center>
+```{r echo=FALSE,eval=flag2[2]}
+x2=numeric()
+x3=numeric()
+if(params$moneda=="Dólares"){
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV.Dólar[data$Categoría==as.character(as.character(p$Categoría[2])) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i])  
+    x3[i]=sum(data$INV.Dólar[data$Categoría==as.character(p$Categoría[2]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}else{
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[2]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+     x3[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[2]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}
+var2=round((x2/x3-1)*100,0)
+x2=data.frame(levels(data$Anunciante),x3,x2,var2)
+x2=x2[order(-x2$x2),]
+x2=x2[x2$x2>0,]
+
+names(x2)=c("Marca","Anterior","Actual","Variación")
+marca2=as.character(x2$Marca)
+```
+
+```{r echo=FALSE, eval= flag2[2]}
+data1=data[data$Categoría==as.character(as.character(p$Categoría[2])) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
+data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
+data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
+data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+
+temp=""
+if(length(data1$Anunciante)>3){
+  for(i in 1:3){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(3==i){
+      temp3=" y "
+    }else{
+      if(i==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}else{
+  for(i in 1:length(data1$Anunciante)){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(length(x2$Marca)==i){
+      temp3=" y "
+    }else{
+      if(length(x2$Marca)==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}
+```
+<br>
+```{r echo=FALSE, eval=flag2[2],results='asis'}
+cat("La inversión registrada en ",p$Categoría[2]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+```
+
+<br>
+<center><h4>
+**
+```{r echo=FALSE,results='asis',eval=flag2[2]}
+cat("Mix de medios para las principales Marcas")
+```
+**</h4></center>
+<br>
+<div align="center">
+
+```{r echo=FALSE,eval=flag2[2]}
+ggplot(data=data1[which(data1$Porcentaje>=0.5),],aes(y=Porcentaje, x=Anunciante, fill=Tipo.de.Medio))+geom_bar(position = "stack",stat = "identity")+coord_flip()+geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.x= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=9),axis.text.y = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.x = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL)
+```
+</div>
+<br>
+<br>
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[2]}
+cat("Day Parts según inversión")
+```
+**</h3></center>
+<br>
+<br>
+<table align="center">
+<tr>
+<td align="center" style="width:25%">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[2]}
+if(nrow(x)>=1){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td  style="width:50%">
+
+```{r echo=FALSE,eval=flag2[2]}
+if(nrow(x)>=1){
+  kable(fra[[1]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center" style="width:25%">
+```{r echo=FALSE, results='asis',eval=flag2[2]}
+if(nrow(x)>=1){
+  temp=c("Duración utilizada:\n", as.character(dur[1]),"\n La compra se concentra en \n",as.character(l[1]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr >
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag2[2]}
+if(nrow(x)>=2){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[2]}
+if(nrow(x)>=2){
+  kable(fra[[2]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis' ,eval=flag2[2]}
+if(nrow(x)>=2){
+  temp=c("Duración utilizada:\n", as.character(dur[2]),"\n La compra se concentra en \n",as.character(l[2]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr>
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[2]}
+if(nrow(x)>=3){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[2]}
+if(nrow(x)>=3){
+  kable(fra[[3]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis',eval=flag2[2]}
+if(nrow(x)>=3){
+  temp=c("Duración utilizada:\n", as.character(dur[3]),"\n La compra se concentra en \n",as.character(l[3]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
+
+
+
+```{r echo=FALSE,results='asis',eval=flag2[2]}
+data2=data[data$Categoría==as.character(p$Categoría[2]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
+data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
+data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
+data_1=data.table(data2)
+data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
+```
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[2]}
+cat("Soporte de medios utilizados por los principales Anunciantes ", params$mes_in," a ",params$mes_fin)
+```
+**</h3></center>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,out.width="50%",eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/TELEVISION.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE,eval=flag2[2]}
+
+if("TV"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="TV",]
+  data_5=data_3
+  data_5$Duración=as.numeric(as.character(data_5$Duración))
+  data_5$TRP=as.numeric(data_5$TRP)
+  data_5$TRPs=(data_5$TRP*data_5$Duración)/30
+  data_5$TRPs[is.na(data_5$TRPs)]=0
+  data_5=data_5[,list(TRPs=round(sum(TRPs),0)),by=list(Anunciante)]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="TV",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+  data_4=data_4[order(-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Televisión para este periodo"
+}
+```
+
+<table align="center">
+<tr>
+<td align="center" style="width:20%">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+<td align="right" style="width:10%">
+```{r echo=FALSE,eval=flag[1]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[2]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[3]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+</table>
+
+<div style="clear:both"></div>
+
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[2]}
+if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Publicidad Exteriores para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:30%">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[2]}
+
+if("PRENSA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PRENSA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PRENSA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Prensa para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
+```
+</center>
+</div >
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, results='asis',eval=flag2[2]}
+
+if("CINES"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="CINES",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="CINES",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Cines para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[2]}
+
+if("RADIO"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="RADIO",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="RADIO",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Radio para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[2]}
+img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,results='asis',eval=flag2[2]}
+
+if("REVISTA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))>=3){
+    cont=3
+  }else{
+    cont=length(levels(data_4$Anunciante))
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Revistas para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste(src='https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, eval=flag2[3]}
+data3=data[data$Categoría==as.character(p$Categoría[3]),]
+data3$Anunciante=as.factor(as.character(data3$Anunciante))
+medios=as.factor(as.character(data3$Medio[data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+x=numeric()
+for(i in 1:length(levels(data3$Anunciante))){
+  x[i]=sum(data3$INV.Dólar[(data3$Anunciante==levels(data3$Anunciante)[i]) & data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i & (data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION")])  
+}
+x=data.frame(levels(data3$Anunciante),x)
+x=x[order(-x$x),]
+x=x[x$x>0,]
+x$x=round(x$x/sum(x$x)*100,2)
+names(x)=c("Marca","Porcentaje")
+marca=as.character(x$Marca)
+
+
+l=0
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(medios))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Medio==levels(medios)[i]])
+  }
+  m=data.frame(levels(medios),m)
+  m=m[m[,2]>0,]
+  names(m)=c("Medio","Inversión")
+  l[j]=paste(m$Medio,collapse = ", ")
+}
+
+dur=0
+duracion=as.factor(as.character(data3$Duración))
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(duracion))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Duración==levels(duracion)[i]])
+  }
+  m=data.frame(levels(duracion),m)
+  m=m[m[,2]>0,]
+  m=as.numeric(as.character(m[m[,2]>0,1]))
+  m=m[order(m)]
+  m[m==11]=10
+  m=m[m%%5==0]
+  dur[j]=paste(m,collapse = ", ")
+}
+
+fra=list()
+franja=as.factor(as.character(data3$Franja[data3$Tipo.de.Medio=="TV NACIONAL" |
+                                            data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(franja))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Franja==levels(franja)[i]])
+  }
+  m=data.frame(levels(franja),m)
+  names(m)=c("Franja","Porcentaje")
+  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
+  m=m[order(m$Franja),]
+  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
+  fra[[j]]=m
+}
+```
+<center><h3>
+```{r echo=F, eval=flag2[3], results='asis'}
+cat(as.character(as.character(p$Categoría[3])))
+```
+</h3></center>
+
+<center><h3>
+```{r echo=FALSE,results='asis',eval=flag2[3] }
+cat("Marca")
+```
+</h3></center>
+```{r echo=FALSE,eval=flag2[3]}
+x2=numeric()
+x3=numeric()
+if(params$moneda=="Dólares"){
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV.Dólar[data$Categoría==as.character(as.character(p$Categoría[3])) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i])  
+    x3[i]=sum(data$INV.Dólar[data$Categoría==as.character(p$Categoría[3]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}else{
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[3]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+     x3[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[3]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}
+var2=round((x2/x3-1)*100,0)
+x2=data.frame(levels(data$Anunciante),x3,x2,var2)
+x2=x2[order(-x2$x2),]
+x2=x2[x2$x2>0,]
+
+names(x2)=c("Marca","Anterior","Actual","Variación")
+marca2=as.character(x2$Marca)
+```
+
+```{r echo=FALSE, eval= flag2[3]}
+data1=data[data$Categoría==as.character(as.character(p$Categoría[3])) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
+data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
+data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
+data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+
+temp=""
+if(length(data1$Anunciante)>3){
+  for(i in 1:3){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(3==i){
+      temp3=" y "
+    }else{
+      if(i==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}else{
+  for(i in 1:length(data1$Anunciante)){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(length(x2$Marca)==i){
+      temp3=" y "
+    }else{
+      if(length(x2$Marca)==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}
+```
+<br>
+```{r echo=FALSE, eval=flag2[3],results='asis'}
+cat("La inversión registrada en ",p$Categoría[3]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+```
+
+<br>
+<center><h4>
+**
+```{r echo=FALSE,results='asis',eval=flag2[3]}
+cat("Mix de medios para las principales Marcas")
+```
+**</h4></center>
+<br>
+<div align="center">
+
+```{r echo=FALSE,eval=flag2[3]}
+ggplot(data=data1[which(data1$Porcentaje>=0.5),],aes(y=Porcentaje, x=Anunciante, fill=Tipo.de.Medio))+geom_bar(position = "stack",stat = "identity")+coord_flip()+geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.x= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=9),axis.text.y = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.x = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL)
+```
+</div>
+<br>
+<br>
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[3]}
+cat("Day Parts según inversión")
+```
+**</h3></center>
+<br>
+<br>
+<table align="center">
+<tr>
+<td align="center" style="width:25%">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[3]}
+if(nrow(x)>=1){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td  style="width:50%">
+
+```{r echo=FALSE,eval=flag2[3]}
+if(nrow(x)>=1){
+  kable(fra[[1]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center" style="width:25%">
+```{r echo=FALSE, results='asis',eval=flag2[3]}
+if(nrow(x)>=1){
+  temp=c("Duración utilizada:\n", as.character(dur[1]),"\n La compra se concentra en \n",as.character(l[1]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr >
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag2[3]}
+if(nrow(x)>=2){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[3]}
+if(nrow(x)>=2){
+  kable(fra[[2]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis' ,eval=flag2[3]}
+if(nrow(x)>=2){
+  temp=c("Duración utilizada:\n", as.character(dur[2]),"\n La compra se concentra en \n",as.character(l[2]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr>
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[3]}
+if(nrow(x)>=3){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[3]}
+if(nrow(x)>=3){
+  kable(fra[[3]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis',eval=flag2[3]}
+if(nrow(x)>=3){
+  temp=c("Duración utilizada:\n", as.character(dur[3]),"\n La compra se concentra en \n",as.character(l[3]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
+
+
+
+```{r echo=FALSE,results='asis',eval=flag2[3]}
+data2=data[data$Categoría==as.character(p$Categoría[3]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
+data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
+data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
+data_1=data.table(data2)
+data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
+```
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[3]}
+cat("Soporte de medios utilizados por los principales Anunciantes ", params$mes_in," a ",params$mes_fin)
+```
+**</h3></center>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,out.width="50%",eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/TELEVISION.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE,eval=flag2[3]}
+
+if("TV"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="TV",]
+  data_5=data_3
+  data_5$Duración=as.numeric(as.character(data_5$Duración))
+  data_5$TRP=as.numeric(data_5$TRP)
+  data_5$TRPs=(data_5$TRP*data_5$Duración)/30
+  data_5$TRPs[is.na(data_5$TRPs)]=0
+  data_5=data_5[,list(TRPs=round(sum(TRPs),0)),by=list(Anunciante)]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="TV",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+  data_4=data_4[order(-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Televisión para este periodo"
+}
+```
+
+<table align="center">
+<tr>
+<td align="center" style="width:20%">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+<td align="right" style="width:10%">
+```{r echo=FALSE,eval=flag[1]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[2]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[3]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+</table>
+
+<div style="clear:both"></div>
+
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[3]}
+if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Publicidad Exteriores para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:30%">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[3]}
+
+if("PRENSA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PRENSA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PRENSA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Prensa para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
+```
+</center>
+</div >
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, results='asis',eval=flag2[3]}
+
+if("CINES"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="CINES",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="CINES",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Cines para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[3]}
+
+if("RADIO"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="RADIO",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="RADIO",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Radio para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[3]}
+img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,results='asis',eval=flag2[3]}
+
+if("REVISTA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))>=3){
+    cont=3
+  }else{
+    cont=length(levels(data_4$Anunciante))
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Revistas para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste(src='https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, eval=flag2[4]}
+data3=data[data$Categoría==as.character(p$Categoría[4]),]
+data3$Anunciante=as.factor(as.character(data3$Anunciante))
+medios=as.factor(as.character(data3$Medio[data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+x=numeric()
+for(i in 1:length(levels(data3$Anunciante))){
+  x[i]=sum(data3$INV.Dólar[(data3$Anunciante==levels(data3$Anunciante)[i]) & data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i & (data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION")])  
+}
+x=data.frame(levels(data3$Anunciante),x)
+x=x[order(-x$x),]
+x=x[x$x>0,]
+x$x=round(x$x/sum(x$x)*100,2)
+names(x)=c("Marca","Porcentaje")
+marca=as.character(x$Marca)
+
+
+l=0
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(medios))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Medio==levels(medios)[i]])
+  }
+  m=data.frame(levels(medios),m)
+  m=m[m[,2]>0,]
+  names(m)=c("Medio","Inversión")
+  l[j]=paste(m$Medio,collapse = ", ")
+}
+
+dur=0
+duracion=as.factor(as.character(data3$Duración))
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(duracion))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Duración==levels(duracion)[i]])
+  }
+  m=data.frame(levels(duracion),m)
+  m=m[m[,2]>0,]
+  m=as.numeric(as.character(m[m[,2]>0,1]))
+  m=m[order(m)]
+  m[m==11]=10
+  m=m[m%%5==0]
+  dur[j]=paste(m,collapse = ", ")
+}
+
+fra=list()
+franja=as.factor(as.character(data3$Franja[data3$Tipo.de.Medio=="TV NACIONAL" |
+                                            data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(franja))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Franja==levels(franja)[i]])
+  }
+  m=data.frame(levels(franja),m)
+  names(m)=c("Franja","Porcentaje")
+  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
+  m=m[order(m$Franja),]
+  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
+  fra[[j]]=m
+}
+```
+<center><h3>
+```{r echo=F, eval=flag2[4], results='asis'}
+cat(as.character(as.character(p$Categoría[4])))
+```
+</h3></center>
+
+<center><h3>
+```{r echo=FALSE,results='asis',eval=flag2[4] }
+cat("Marca")
+```
+</h3></center>
+```{r echo=FALSE,eval=flag2[4]}
+x2=numeric()
+x3=numeric()
+if(params$moneda=="Dólares"){
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV.Dólar[data$Categoría==as.character(as.character(p$Categoría[4])) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i])  
+    x3[i]=sum(data$INV.Dólar[data$Categoría==as.character(p$Categoría[4]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}else{
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[4]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+     x3[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[4]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}
+var2=round((x2/x3-1)*100,0)
+x2=data.frame(levels(data$Anunciante),x3,x2,var2)
+x2=x2[order(-x2$x2),]
+x2=x2[x2$x2>0,]
+
+names(x2)=c("Marca","Anterior","Actual","Variación")
+marca2=as.character(x2$Marca)
+```
+
+```{r echo=FALSE, eval= flag2[4]}
+data1=data[data$Categoría==as.character(as.character(p$Categoría[4])) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
+data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
+data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
+data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+
+temp=""
+if(length(data1$Anunciante)>3){
+  for(i in 1:3){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(3==i){
+      temp3=" y "
+    }else{
+      if(i==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}else{
+  for(i in 1:length(data1$Anunciante)){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(length(x2$Marca)==i){
+      temp3=" y "
+    }else{
+      if(length(x2$Marca)==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}
+```
+<br>
+```{r echo=FALSE, eval=flag2[4],results='asis'}
+cat("La inversión registrada en ",p$Categoría[4]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+```
+
+<br>
+<center><h4>
+**
+```{r echo=FALSE,results='asis',eval=flag2[4]}
+cat("Mix de medios para las principales Marcas")
+```
+**</h4></center>
+<br>
+<div align="center">
+
+```{r echo=FALSE,eval=flag2[4]}
+ggplot(data=data1[which(data1$Porcentaje>=0.5),],aes(y=Porcentaje, x=Anunciante, fill=Tipo.de.Medio))+geom_bar(position = "stack",stat = "identity")+coord_flip()+geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.x= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=9),axis.text.y = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.x = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL)
+```
+</div>
+<br>
+<br>
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[4]}
+cat("Day Parts según inversión")
+```
+**</h3></center>
+<br>
+<br>
+<table align="center">
+<tr>
+<td align="center" style="width:25%">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[4]}
+if(nrow(x)>=1){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td  style="width:50%">
+
+```{r echo=FALSE,eval=flag2[4]}
+if(nrow(x)>=1){
+  kable(fra[[1]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center" style="width:25%">
+```{r echo=FALSE, results='asis',eval=flag2[4]}
+if(nrow(x)>=1){
+  temp=c("Duración utilizada:\n", as.character(dur[1]),"\n La compra se concentra en \n",as.character(l[1]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr >
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag2[4]}
+if(nrow(x)>=2){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[4]}
+if(nrow(x)>=2){
+  kable(fra[[2]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis' ,eval=flag2[4]}
+if(nrow(x)>=2){
+  temp=c("Duración utilizada:\n", as.character(dur[2]),"\n La compra se concentra en \n",as.character(l[2]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr>
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[4]}
+if(nrow(x)>=3){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[4]}
+if(nrow(x)>=3){
+  kable(fra[[3]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis',eval=flag2[4]}
+if(nrow(x)>=3){
+  temp=c("Duración utilizada:\n", as.character(dur[3]),"\n La compra se concentra en \n",as.character(l[3]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
+
+
+
+```{r echo=FALSE,results='asis',eval=flag2[4]}
+data2=data[data$Categoría==as.character(p$Categoría[4]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
+data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
+data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
+data_1=data.table(data2)
+data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
+```
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[4]}
+cat("Soporte de medios utilizados por los principales Anunciantes ", params$mes_in," a ",params$mes_fin)
+```
+**</h3></center>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,out.width="50%",eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/TELEVISION.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE,eval=flag2[4]}
+
+if("TV"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="TV",]
+  data_5=data_3
+  data_5$Duración=as.numeric(as.character(data_5$Duración))
+  data_5$TRP=as.numeric(data_5$TRP)
+  data_5$TRPs=(data_5$TRP*data_5$Duración)/30
+  data_5$TRPs[is.na(data_5$TRPs)]=0
+  data_5=data_5[,list(TRPs=round(sum(TRPs),0)),by=list(Anunciante)]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="TV",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+  data_4=data_4[order(-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Televisión para este periodo"
+}
+```
+
+<table align="center">
+<tr>
+<td align="center" style="width:20%">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+<td align="right" style="width:10%">
+```{r echo=FALSE,eval=flag[1]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[2]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[3]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+</table>
+
+<div style="clear:both"></div>
+
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[4]}
+if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Publicidad Exteriores para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:30%">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[4]}
+
+if("PRENSA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PRENSA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PRENSA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Prensa para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
+```
+</center>
+</div >
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, results='asis',eval=flag2[4]}
+
+if("CINES"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="CINES",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="CINES",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Cines para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[4]}
+
+if("RADIO"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="RADIO",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="RADIO",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Radio para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[4]}
+img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,results='asis',eval=flag2[4]}
+
+if("REVISTA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))>=3){
+    cont=3
+  }else{
+    cont=length(levels(data_4$Anunciante))
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Revistas para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste(src='https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, eval=flag2[5]}
+data3=data[data$Categoría==as.character(p$Categoría[5]),]
+data3$Anunciante=as.factor(as.character(data3$Anunciante))
+medios=as.factor(as.character(data3$Medio[data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+x=numeric()
+for(i in 1:length(levels(data3$Anunciante))){
+  x[i]=sum(data3$INV.Dólar[(data3$Anunciante==levels(data3$Anunciante)[i]) & data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i & (data3$Tipo.de.Medio=="TV NACIONAL" | data3$Tipo.de.Medio=="TV SUSCRIPCION")])  
+}
+x=data.frame(levels(data3$Anunciante),x)
+x=x[order(-x$x),]
+x=x[x$x>0,]
+x$x=round(x$x/sum(x$x)*100,2)
+names(x)=c("Marca","Porcentaje")
+marca=as.character(x$Marca)
+
+
+l=0
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(medios))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Medio==levels(medios)[i]])
+  }
+  m=data.frame(levels(medios),m)
+  m=m[m[,2]>0,]
+  names(m)=c("Medio","Inversión")
+  l[j]=paste(m$Medio,collapse = ", ")
+}
+
+dur=0
+duracion=as.factor(as.character(data3$Duración))
+
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(duracion))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Duración==levels(duracion)[i]])
+  }
+  m=data.frame(levels(duracion),m)
+  m=m[m[,2]>0,]
+  m=as.numeric(as.character(m[m[,2]>0,1]))
+  m=m[order(m)]
+  m[m==11]=10
+  m=m[m%%5==0]
+  dur[j]=paste(m,collapse = ", ")
+}
+
+fra=list()
+franja=as.factor(as.character(data3$Franja[data3$Tipo.de.Medio=="TV NACIONAL" |
+                                            data3$Tipo.de.Medio=="TV SUSCRIPCION"]))
+for(j in 1:3){
+  m=0
+  for(i in 1:length(levels(franja))){
+    m[i]=sum(data3$INV.Dólar[data3$Año==params$ano & data3$Mes<=params$mes_f & data3$Mes>=params$mes_i &
+                              (data3$Tipo.de.Medio=="TV NACIONAL" |
+                                 data3$Tipo.de.Medio=="TV SUSCRIPCION") &
+                              data3$Anunciante==as.character(x$Marca[j]) & data3$Franja==levels(franja)[i]])
+  }
+  m=data.frame(levels(franja),m)
+  names(m)=c("Franja","Porcentaje")
+  m$Franja=factor(m$Franja, levels=c("PRIME TIME","VESPERTINO","MERIDIANA","NOCTURNA","MATUTINA","MADRUGADA"),ordered = T)
+  m=m[order(m$Franja),]
+  m$Porcentaje=round(prop.table(m$Porcentaje)*100,2)
+  fra[[j]]=m
+}
+```
+<center><h3>
+```{r echo=F, eval=flag2[5], results='asis'}
+cat(as.character(as.character(p$Categoría[5])))
+```
+</h3></center>
+
+<center><h3>
+```{r echo=FALSE,results='asis',eval=flag2[5] }
+cat("Marca")
+```
+</h3></center>
+```{r echo=FALSE,eval=flag2[5]}
+x2=numeric()
+x3=numeric()
+if(params$moneda=="Dólares"){
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV.Dólar[data$Categoría==as.character(as.character(p$Categoría[5])) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i])  
+    x3[i]=sum(data$INV.Dólar[data$Categoría==as.character(p$Categoría[5]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}else{
+  for(i in 1:length(levels(data$Anunciante))){
+    x2[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[5]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+     x3[i]=sum(data$INV[data$Categoría==as.character(p$Categoría[5]) & (data$Anunciante==levels(data$Anunciante)[i]) & data$Año==as.numeric(params$ano)-1 & data$Mes<=params$mes_f & data$Mes>=params$mes_i]) 
+  }
+}
+var2=round((x2/x3-1)*100,0)
+x2=data.frame(levels(data$Anunciante),x3,x2,var2)
+x2=x2[order(-x2$x2),]
+x2=x2[x2$x2>0,]
+
+names(x2)=c("Marca","Anterior","Actual","Variación")
+marca2=as.character(x2$Marca)
+```
+
+```{r echo=FALSE, eval= flag2[5]}
+data1=data[data$Categoría==as.character(as.character(p$Categoría[5])) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
+data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
+data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
+data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+
+temp=""
+if(length(data1$Anunciante)>3){
+  for(i in 1:3){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(3==i){
+      temp3=" y "
+    }else{
+      if(i==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}else{
+  for(i in 1:length(data1$Anunciante)){
+    temp2=paste(x2$Marca[i],paste(format(x2$Actual[i],big.mark = ",")," ",moneda),sep=": ")
+    temp2=paste(temp2," ","(",x2$Variación[i],"% YTD)",sep="")
+    if(length(x2$Marca)==i){
+      temp3=" y "
+    }else{
+      if(length(x2$Marca)==1){
+        temp3=""
+      }else{
+        temp3=", "
+      }
+    }
+    temp=paste(temp,temp2,sep=temp3)
+  }
+}
+```
+<br>
+```{r echo=FALSE, eval=flag2[5],results='asis'}
+cat("La inversión registrada en ",p$Categoría[5]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+```
+
+<br>
+<center><h4>
+**
+```{r echo=FALSE,results='asis',eval=flag2[5]}
+cat("Mix de medios para las principales Marcas")
+```
+**</h4></center>
+<br>
+<div align="center">
+
+```{r echo=FALSE,eval=flag2[5]}
+ggplot(data=data1[which(data1$Porcentaje>=0.5),],aes(y=Porcentaje, x=Anunciante, fill=Tipo.de.Medio))+geom_bar(position = "stack",stat = "identity")+coord_flip()+geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.x= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=9),axis.text.y = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.x = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL)
+```
+</div>
+<br>
+<br>
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[5]}
+cat("Day Parts según inversión")
+```
+**</h3></center>
+<br>
+<br>
+<table align="center">
+<tr>
+<td align="center" style="width:25%">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[5]}
+if(nrow(x)>=1){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[1]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td  style="width:50%">
+
+```{r echo=FALSE,eval=flag2[5]}
+if(nrow(x)>=1){
+  kable(fra[[1]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center" style="width:25%">
+```{r echo=FALSE, results='asis',eval=flag2[5]}
+if(nrow(x)>=1){
+  temp=c("Duración utilizada:\n", as.character(dur[1]),"\n La compra se concentra en \n",as.character(l[1]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr >
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag2[5]}
+if(nrow(x)>=2){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[2]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[5]}
+if(nrow(x)>=2){
+  kable(fra[[2]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis' ,eval=flag2[5]}
+if(nrow(x)>=2){
+  temp=c("Duración utilizada:\n", as.character(dur[2]),"\n La compra se concentra en \n",as.character(l[2]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+<tr>
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE ,eval=flag2[5]}
+if(nrow(x)>=3){
+  img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(marca[3]),'.png',sep = ""))
+}
+```
+</center>
+</td>
+<td>
+```{r echo=FALSE ,eval=flag2[5]}
+if(nrow(x)>=3){
+  kable(fra[[3]],format = "html",row.names = F)%>%
+    kable_styling(bootstrap_option="striped",full_width=F)
+}
+```
+</td>
+<td align="center">
+```{r echo=FALSE, results='asis',eval=flag2[5]}
+if(nrow(x)>=3){
+  temp=c("Duración utilizada:\n", as.character(dur[3]),"\n La compra se concentra en \n",as.character(l[3]))
+  cat(temp,sep="\n")
+}
+```
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
+
+
+
+```{r echo=FALSE,results='asis',eval=flag2[5]}
+data2=data[data$Categoría==as.character(p$Categoría[5]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
+data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
+data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
+data_1=data.table(data2)
+data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
+```
+<center><h3>**
+```{r echo=FALSE,results='asis',eval=flag2[5]}
+cat("Soporte de medios utilizados por los principales Anunciantes ", params$mes_in," a ",params$mes_fin)
+```
+**</h3></center>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,out.width="50%",eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/TELEVISION.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE,eval=flag2[5]}
+
+if("TV"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="TV",]
+  data_5=data_3
+  data_5$Duración=as.numeric(as.character(data_5$Duración))
+  data_5$TRP=as.numeric(data_5$TRP)
+  data_5$TRPs=(data_5$TRP*data_5$Duración)/30
+  data_5$TRPs[is.na(data_5$TRPs)]=0
+  data_5=data_5[,list(TRPs=round(sum(TRPs),0)),by=list(Anunciante)]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="TV",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+  data_4=data_4[order(-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Televisión para este periodo"
+}
+```
+
+<table align="center">
+<tr>
+<td align="center" style="width:20%">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+<td align="right" style="width:10%">
+```{r echo=FALSE,eval=flag[1]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[2]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:70%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+<td align="right" >
+```{r echo=FALSE,eval=flag[3]}
+kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",format = "html",row.names = F)%>%
+  kable_styling(bootstrap_option="striped",full_width=F)
+```
+</td>
+</tr>
+</table>
+
+<div style="clear:both"></div>
+
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/PUBLICIDAD EXTERIOR.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[5]}
+if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PUBLICIDAD EXTERIOR",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Publicidad Exteriores para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:30%">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:46%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="right">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/PRENSA.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[5]}
+
+if("PRENSA"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="PRENSA",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="PRENSA",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Prensa para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/CINES.png')
+```
+</center>
+</div >
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE, results='asis',eval=flag2[5]}
+
+if("CINES"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="CINES",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="CINES",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Cines para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/RADIO.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,eval=flag2[5]}
+
+if("RADIO"%in%data_2$Tipo.de.Medio){
+  data_3=data_1[data_1$Tipo.de.Medio=="RADIO",]
+  data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
+  data_4=data_2[data_2$Tipo.de.Medio=="RADIO",]
+  data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
+
+  data_4=data_4[order(data_4$Anunciante,-data_4$Inversión),]
+  if(length(levels(data_4$Anunciante))<=3){
+    cont=length(levels(data_4$Anunciante))
+  }else{
+    cont=3
+  }
+  text=""
+  table=list()
+  anun=0
+  for(i in 1:cont){flag[i]=T}
+  for(i in 1:cont){
+    table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
+      kable_styling(bootstrap_option="striped",full_width=F)
+    anun[i]=as.character(levels(data_4$Anunciante)[i])}
+}else{
+  text="No se realizó inversión en Radio para este periodo"
+}
+```
+<table align="center">
+<tr>
+<td align="center" style="width:50%">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[1],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center" style="width:50%">
+```{r echo=FALSE,eval=flag[1]}
+table[[1]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center" >
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[2],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[2]}
+table[[2]]
+```
+</td>
+
+</tr>
+<br>
+<tr>
+
+<td align="center">
+<center style="width:45%">
+```{r echo=FALSE,eval=flag[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',anun[3],'.png',sep = ""))
+```
+</center>
+</td>
+
+<td align="center">
+```{r echo=FALSE,eval=flag[3]}
+table[[3]]
+```
+</td>
+
+</tr>
+</table>
+
+<div style="clear:both"></div>
+<div align="center" style= "color:red">
+**`r text`**
+</div>
+<br>
+<br>
+<div align="center">
+<center style="width:15%">
+```{r echo=FALSE,eval=flag2[5]}
+img(src='https://camedia.shinyapps.io/Reportes/REVISTAS.png')
+```
+</center>
+</div>
+<br>
+<br>
+```{r echo=FALSE}
+flag=c(F,F,F)
+```
+
+```{r echo=FALSE,results='asis',eval=flag2[5]}
+
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]

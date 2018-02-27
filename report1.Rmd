@@ -44,7 +44,7 @@ if(params$cliente=="INS") {
 
 if(params$cliente=="FIFCO Jugos") {
   cat="JUGOS Y REFRESCOS"
-  cat2=c("JUGOS","REFRESCOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES","REFRESCOS DE TE","BEBIDAS NATURALES")}
+  cat2=c("JUGOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES","REFRESCOS DE TE","BEBIDAS NATURALES")}
 
 if(params$cliente%in%c("BANCO POPULAR","BANCO DE CR")){
   cat="BANCA"
@@ -82,9 +82,14 @@ data$Anunciante=as.factor(data$Anunciante)
 
 
 data$Categoría=as.character(data$Categoría)
-data$Categoría[data$Categoría%in%c("JUGOS","REFRESCOS")]="JUGOS Y REFRESCOS"
+data$Categoría[data$Categoría%in%c("JUGOS","REFRESCOS")]="JUGOS"
 data$Categoría[data$Categoría%in%c("GASEOSOS CRISTALIN","GASEOSOS SABORES")]="GASEOSOS SABORES"
 data$Categoría=as.factor(data$Categoría)
+
+base1$Categoría=as.character(base1$Categoría)
+base1$Categoría[base1$Categoría%in%c("JUGOS","REFRESCOS")]="JUGOS"
+base1$Categoría[base1$Categoría%in%c("GASEOSOS CRISTALIN","GASEOSOS SABORES")]="GASEOSOS SABORES"
+base1$Categoría=as.factor(base1$Categoría)
 
 #################################################
 ## SE DEFINE SI LA INV ES EN MILES O EN UNIDAD ##

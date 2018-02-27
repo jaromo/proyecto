@@ -357,9 +357,13 @@ x3=x3[order(-x3$x3),]
 x3=x3[x3$x3>0,]
 names(x3)=c("Marca","Inversión")
 if(if(length(which(x2$Marca==marcacliente))==0){0}else{which(x2$Marca==marcacliente)}>3){
-  x3=x3[c(1:3,which(x3$Marca==marcacliente)),]
+  x3=x3[c(1:3,which(x2$Marca==marcacliente)),]
 }else{
-  x3=x3[1:3,]
+  if(nrow(x3)<3){
+    x3=x3[1:nrow(x3),]
+  }else{
+    x3=x3[1:3,]
+  }
 }
 
 ########################################################################
@@ -665,9 +669,9 @@ if(length(x2$Marca)>3){
       
     }else{
       if(length(which(x2$Marca==marcacliente))==0){
-        for(i in 1:length(x2$Marca)){
+        for(i in 1:3){
           temp2=paste(x2$Marca[i],paste(x2$Porcentaje[i],"%"),sep=": ")
-          if(length(x2$Marca)==i){
+          if(3==i){
             temp3=" y "
           }else{
             if(length(x2$Marca)==1){
@@ -679,7 +683,7 @@ if(length(x2$Marca)>3){
           temp=paste(temp,temp2,sep=temp3)
         }
       }else{
-        for(i in c(1:3,which(x2$Marca==as.character(marcacliente)))){
+        for(i in 1:3){
           temp2=paste(x2$Marca[i],paste(x2$Porcentaje[i],"%"),sep=": ")
           if(3==i){
             temp3=" y "
@@ -720,23 +724,32 @@ Para la inversión registrada en **`r cat`** de `r params$mes_in` a `r params$me
 <div style="float:left">
 ```{r echo=FALSE}
 flag3=c(F,F,F,F)
-for(i in 1:nrow(x3)){
-  flag3[i]=T
+if(nrow(x3)==2){
+  flag3=c(T,F,T,F)
+}else{
+  for(i in 1:nrow(x3)){
+    flag3[i]=T
+  }
 }
 ```
+
 <table>
 <tr>
 <td>
 ```{r echo=FALSE}
 data1=data[data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
-if(if(length(which(x2$Marca==marcacliente))==0){0}else{which(x2$Marca==marcacliente)}<=3){
+if(if(length(which(x2$Marca==marcacliente))==0){0}else{which(x2$Marca==as.character(marcacliente))}<=3){
   data1=data.table(data1[data1$Anunciante%in%x2$Marca[1:3],])
 }else{
   data1=data.table(data1[data1$Anunciante%in%x2$Marca[c(1:3,which(x2$Marca==as.character(marcacliente)))],])
 }
 data1=data1[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante,Tipo.de.Medio)]
 data1[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Anunciante) ]
-data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[c(which(x2$Marca==as.character(marcacliente)),3:1)]))
+if(if(length(which(x2$Marca==marcacliente))==0){0}else{which(x2$Marca==as.character(marcacliente))}<=3){
+data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[3:1]))
+}else{
+  data1$Anunciante = factor(data1$Anunciante, levels=unique(x2$Marca[c(which(x2$Marca==as.character(marcacliente)),3:1)]))
+}
 
 ggplot(data=data1[which(data1$Porcentaje>=0.5),],aes(y=Porcentaje, x=Anunciante, fill=Tipo.de.Medio))+geom_bar(position = "stack",stat = "identity")+coord_flip()+geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+scale_fill_manual(values=brewer.pal(n = 7, name = "Set2"))+theme(legend.title = element_text(colour = "white"),legend.position="bottom",axis.text.x= element_text(colour = "white"),panel.background = element_rect(fill='white'),legend.text = element_text(size=8),axis.text.y = element_text(size=13),legend.key.size = unit(0.5,"cm"), axis.ticks.x = element_line(color = "white"),validate = F)+labs(x=NULL,y=NULL) 
 ```
@@ -764,7 +777,11 @@ cat(format(x3$Inversión[2],big.mark = ",")," ",moneda)
 <tr>
 <th>
 ```{r echo=F,results='asis',eval=flag3[3]}
-cat(format(x3$Inversión[3],big.mark = ",")," ",moneda)
+if(nrow(x3)==2){
+  cat(format(x3$Inversión[2],big.mark = ",")," ",moneda)
+}else{
+  cat(format(x3$Inversión[3],big.mark = ",")," ",moneda)
+}
 ```
 </th>
 </tr>

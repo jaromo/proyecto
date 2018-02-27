@@ -44,7 +44,9 @@ target="Universo"
 ##########################################
 
 base1=params$base1
+base2=base1
 names(base1)=c("Año","Mes","Categoría","INV.Dólar","INV")
+names(base2)=c("Año","Mes","Categoría","INV.Dólar","INV")
 data=params$base
 
 
@@ -66,9 +68,11 @@ data$INV.Dólar=data$INV.Dólar/1000
 data$INV=data$INV/1000
 base1$INV=base1$INV/1000
 base1$INV.Dólar=base1$INV.Dólar/1000
+base2$INV=base1$INV/1000
+base2$INV.Dólar=base1$INV.Dólar/1000
 }
 
-
+marcacliente=""
 #################################################################
 ## SE DEFINE LA MONEDA, SE CALCULA LA INVERSION Y LA VARIACION ##        
 #################################################################
@@ -186,7 +190,7 @@ medios=as.factor(as.character(data$Medio[data$Tipo.de.Medio=="TV NACIONAL" | dat
 #############################################
 ## SE CALCULA LAS PRINCIPALES MARCAS EN TV ##
 #############################################
-
+data$Anunciante=as.factor(as.character(data$Anunciante))
 x=numeric()
 for(i in 1:length(levels(data$Anunciante))){
   x[i]=sum(data$INV.Dólar[(data$Anunciante==levels(data$Anunciante)[i]) & data$Año==params$ano & data$Mes<=params$mes_f & data$Mes>=params$mes_i & (data$Tipo.de.Medio=="TV NACIONAL" | data$Tipo.de.Medio=="TV SUSCRIPCION")])  
@@ -438,16 +442,16 @@ his=0
 his1=0
 if(params$moneda=="Colones"){
   for(i in 1:params$mes_f){
-    if(i%in%base1$Mes){
-    his[i]=sum(base1$INV[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes==i])
+    if(i%in%base2$Mes){
+    his[i]=sum(base2$INV[base2$Categoría%in%cat2 & base2$Año==params$ano & base2$Mes==i])
     }else{
       his[i]=0
     }
   }
 }else{
   for(i in 1:params$mes_f){
-    if(i%in%base1$Mes){
-    his[i]=sum(base1$INV.Dólar[base1$Categoría%in%cat2 & base1$Año==params$ano & base1$Mes==i])
+    if(i%in%base2$Mes){
+    his[i]=sum(base2$INV.Dólar[base2$Categoría%in%cat2 & base2$Año==params$ano & base2$Mes==i])
     }else{
       his[i]=0
     }
@@ -455,16 +459,16 @@ if(params$moneda=="Colones"){
 }
 if(params$moneda=="Colones"){
   for(i in 1:params$mes_f){
-    if(i%in%base1$Mes){
-    his1[i]=sum(base1$INV[base1$Categoría%in%cat2 & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    if(i%in%base2$Mes){
+    his1[i]=sum(base2$INV[base2$Categoría%in%cat2 & base2$Año==as.numeric(params$ano)-1 & base2$Mes==i])
     }else{
       his1[i]=0
     }
   }
 }else{
   for(i in 1:params$mes_f){
-    if(i%in%base1$Mes){
-    his1[i]=sum(base1$INV.Dólar[base1$Categoría%in%cat2 & base1$Año==as.numeric(params$ano)-1 & base1$Mes==i])
+    if(i%in%base2$Mes){
+    his1[i]=sum(base2$INV.Dólar[base2$Categoría%in%cat2 & base2$Año==as.numeric(params$ano)-1 & base2$Mes==i])
     }else{
       his1[i]=0
     }

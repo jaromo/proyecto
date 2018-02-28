@@ -603,7 +603,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[1],results='asis'}
-cat("La inversión registrada en ",p$Categoría[1]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",as.character(p$Categoría[1])," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>
@@ -1504,7 +1504,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[2],results='asis'}
-cat("La inversión registrada en ",p$Categoría[2]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",as.character(p$Categoría[2])," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>
@@ -2405,7 +2405,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[3],results='asis'}
-cat("La inversión registrada en ",p$Categoría[3]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",as.character(p$Categoría[3])," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>
@@ -3306,7 +3306,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[4],results='asis'}
-cat("La inversión registrada en ",p$Categoría[4]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",as.character(p$Categoría[4])," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>
@@ -4207,7 +4207,7 @@ if(length(data1$Anunciante)>3){
 ```
 <br>
 ```{r echo=FALSE, eval=flag2[5],results='asis'}
-cat("La inversión registrada en ",p$Categoría[5]," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
+cat("La inversión registrada en ",as.character(p$Categoría[5])," de ",params$mes_in," a ",params$mes_fin," ",params$`ano`,", se divide en ",temp)
 ```
 
 <br>

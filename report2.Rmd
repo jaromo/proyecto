@@ -20,9 +20,10 @@ params:
     value: NA
   base1:
     value: NA
+  base3:
+    value: NA
 output: 
-  html_document:
-    self-contained: TRUE
+  html_document
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)

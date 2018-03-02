@@ -20,6 +20,8 @@ params:
     value: NA
   base1:
     value: NA
+  base3:
+    value: NA
 output: 
   html_document
 ---

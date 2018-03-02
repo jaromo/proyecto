@@ -20,10 +20,11 @@ params:
     value: NA
   base1:
     value: NA
+  base3:
+    value: NA
 output: 
   html_document
 ---
-
 
 ```{r,echo=FALSE}
 
@@ -48,7 +49,20 @@ base2=base1
 names(base1)=c("Año","Mes","Categoría","INV.Dólar","INV")
 names(base2)=c("Año","Mes","Categoría","INV.Dólar","INV")
 data=params$base
-
+base_ins=params$base3
+base_ins1=data.table(base_ins[base_ins$Ano==as.numeric(params$ano) & base_ins$MES<=params$mes_f & base_ins$MES>=params$mes_i,])
+base_ins2=base_ins1[,list(INV=sum(INV.Dolar)),by=list(AGENCIA,tipo_medio,dmedio)]
+base_ins2$AGENCIA=as.factor(as.character(base_ins2$AGENCIA))
+flag4=c(F,F,F)
+if("OGILVY"%in%levels(base_ins2$AGENCIA)){
+  flag4[1]=T
+}
+if("LA TRES"%in%levels(base_ins2$AGENCIA)){
+  flag4[2]=T
+}
+if("JBQ"%in%levels(base_ins2$AGENCIA)){
+  flag4[3]=T
+}
 
 #################################
 ## AJUSTE DE ALGUNAS VARIABLES ##
@@ -1326,3 +1340,149 @@ table[[3]]
 <div align="center" style= "color:red">
 **`r text`**
 </div>
+
+<center><h3>**Análisis por AGENCIA**</h3></center>
+<br>
+<br>
+<center>
+```{r echo=FALSE,fig.height=4,eval=flag4[1]}
+img(src='https://camedia.shinyapps.io/Reportes/OGILVY.png')
+```
+</center>
+<br>
+<table>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[1]}
+ogilvy=base_ins2[base_ins2$AGENCIA=="OGILVY",-1]
+ogilvy_tm=ogilvy[,list(INV=sum(INV)),by=tipo_medio]
+ogilvy_tm=ogilvy_tm[order(-ogilvy_tm$INV),]
+ogilvy$tipo_medio=factor(ogilvy$tipo_medio,levels = ogilvy_tm$tipo_medio)
+ogilvy=ogilvy[order(ogilvy$tipo_medio,-ogilvy$INV),]
+names(ogilvy)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
+kable(ogilvy,"html")%>%
+  collapse_rows(1)%>%
+  kable_styling(bootstrap_options = "bordered",full_width = F)
+```
+</td>
+</tr>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[1]}
+ogilvy_tm$INV=round(ogilvy_tm$INV/sum(ogilvy_tm$INV)*100,0)
+ogilvy_tm=ogilvy_tm[ogilvy_tm$INV>0,]
+ogilvy_tm$tipo_medio=as.factor(as.character(ogilvy_tm$tipo_medio))
+ogilvy_tm$tipo_medio=factor(ogilvy_tm$tipo_medio,levels = ogilvy_tm$tipo_medio)
+ggplot(data=ogilvy_tm,aes(x=ogilvy_tm$tipo_medio,y=ogilvy_tm$INV, fill=ogilvy_tm$tipo_medio))+
+  geom_bar(position = "stack",stat = "identity")+
+  geom_text(aes(label=paste(INV,"%")),position =position_stack(vjust=0.5) )+
+  scale_fill_manual(values=brewer.pal(n = 8, name = "Set2"))+
+  theme(legend.title = element_text(colour = "white"),
+        legend.position="bottom",axis.text.y= element_text(colour = "white"),
+        panel.background = element_rect(fill='white'),
+        legend.text = element_text(size=10),axis.text.x = element_text(colour="white"),
+        legend.key.size = unit(0.5,"cm"), axis.ticks.y = element_line(color = "white"),
+        axis.ticks.x = element_line(color = "white"),
+        validate = F)+
+  labs(x=NULL,y=NULL) 
+```
+
+</td>
+</tr>
+</table>
+<br>
+<br>
+<center>
+```{r echo=FALSE,fig.height=4,eval=flag4[2]}
+img(src='https://camedia.shinyapps.io/Reportes/LA TRES.png')
+```
+</center>
+<br>
+<table>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[2]}
+la_tres=base_ins2[base_ins2$AGENCIA=="LA TRES",-1]
+la_tres_tm=la_tres[,list(INV=sum(INV)),by=tipo_medio]
+la_tres_tm=la_tres_tm[order(-la_tres_tm$INV),]
+la_tres$tipo_medio=factor(la_tres$tipo_medio,levels = la_tres_tm$tipo_medio)
+la_tres=la_tres[order(la_tres$tipo_medio,-la_tres$INV),]
+names(la_tres)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
+kable(la_tres,"html")%>%
+  collapse_rows(1)%>%
+  kable_styling(bootstrap_options = "bordered",full_width = F)
+```
+</td>
+</tr>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[2]}
+la_tres_tm$INV=round(la_tres_tm$INV/sum(la_tres_tm$INV)*100,0)
+la_tres_tm=la_tres_tm[la_tres_tm$INV>0,]
+la_tres_tm$tipo_medio=as.factor(as.character(la_tres_tm$tipo_medio))
+la_tres_tm$tipo_medio=factor(la_tres_tm$tipo_medio,levels = la_tres_tm$tipo_medio)
+ggplot(data=la_tres_tm,aes(x=la_tres_tm$tipo_medio,y=la_tres_tm$INV, fill=la_tres_tm$tipo_medio))+
+  geom_bar(position = "stack",stat = "identity")+
+  geom_text(aes(label=paste(INV,"%")),position =position_stack(vjust=0.5) )+
+  scale_fill_manual(values=brewer.pal(n = 8, name = "Set2"))+
+  theme(legend.title = element_text(colour = "white"),
+        axis.text.y= element_text(colour = "white"),
+        panel.background = element_rect(fill='white'),
+        legend.text = element_text(size=10),axis.text.x = element_text(colour="white"),
+        legend.key.size = unit(0.5,"cm"), axis.ticks.y = element_line(color = "white"),
+        axis.ticks.x = element_line(color = "white"),
+        validate = F)+
+  labs(x="% INVERSION",y=NULL)
+```
+
+</td>
+</tr>
+</table>
+<br>
+<br>
+<center>
+```{r echo=FALSE,fig.height=4,eval=flag4[3]}
+img(src='https://camedia.shinyapps.io/Reportes/JBQ.png')
+```
+</center>
+<br>
+<table>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[3]}
+jbq=base_ins2[base_ins2$AGENCIA=="JBQ",-1]
+jbq_tm=jbq[,list(INV=sum(INV)),by=tipo_medio]
+jbq_tm=jbq_tm[order(-jbq_tm$INV),]
+jbq$tipo_medio=factor(jbq$tipo_medio,levels = jbq_tm$tipo_medio)
+jbq=jbq[order(jbq$tipo_medio,-jbq$INV),]
+names(jbq)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
+kable(jbq,"html")%>%
+  collapse_rows(1)%>%
+  kable_styling(bootstrap_options = "bordered",full_width = F)
+```
+</td>
+</tr>
+<tr>
+<td>
+```{r echo=FALSE,eval=flag4[3]}
+jbq_tm$INV=round(jbq_tm$INV/sum(jbq_tm$INV)*100,0)
+jbq_tm=jbq_tm[jbq_tm$INV>0,]
+jbq_tm$tipo_medio=as.factor(as.character(jbq_tm$tipo_medio))
+jbq_tm$tipo_medio=factor(jbq_tm$tipo_medio,levels = jbq_tm$tipo_medio)
+ggplot(data=jbq_tm,aes(x=jbq_tm$tipo_medio,y=jbq_tm$INV, fill=jbq_tm$tipo_medio))+
+  geom_bar(position = "stack",stat = "identity")+
+  geom_text(aes(label=paste(INV,"%")),position =position_stack(vjust=0.5) )+
+  scale_fill_manual(values=brewer.pal(n = 8, name = "Set2"))+
+  theme(legend.title = element_text(colour = "white"),
+        legend.position="bottom",axis.text.y= element_text(colour = "white"),
+        panel.background = element_rect(fill='white'),
+        legend.text = element_text(size=10),axis.text.x = element_text(colour="white"),
+        legend.key.size = unit(0.5,"cm"), axis.ticks.y = element_line(color = "white"),
+        axis.ticks.x = element_line(color = "white"),
+        validate = F)+
+  labs(x="% INVERSION",y=NULL) 
+```
+
+</td>
+</tr>
+</table>

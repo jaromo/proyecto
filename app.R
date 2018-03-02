@@ -29,6 +29,7 @@ library(DT)
 
 base=read.csv("data1.csv")
 base1=read.csv("data_inv.csv")
+base2=read.csv("data_ins1.csv")
 base_banca=base[base$Categoria%in%c("CAPTACION DINERO","SEGUROS","TARJETAS CREDITO","BANCA ELECTR CNCPT",
                                    "BANCA IMAGEN","BANCA PAGOS SERVIC","CREDITO OTROS","CREDITO VIVIENDA",
                                    "SERVICIOS PYMES",	"CUENTA DE AHORRO",	"SERVICIOS BANCARIO",
@@ -337,7 +338,8 @@ server <- function(input, output) {
       # configurar los parametros para pasar al documento .Rmd
       params <- list(ano = input$ano, cliente = input$cliente, mes_in = input$date_in, 
                      mes_fin = input$date_fin,unidad=input$unidad,
-                     base=datasetInput1(), mes_i = mes_i(), mes_f = mes_f(), base1 = base1,moneda = input$moneda) 
+                     base=datasetInput1(), mes_i = mes_i(), mes_f = mes_f(),base3=base2,
+                     base1 = base1,moneda = input$moneda) 
       
       #Copilar el documento con la lista de parametros, de tal manera que se 
       #evalue de la misma manera que el entorno de la aplicacion.

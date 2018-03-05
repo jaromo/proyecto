@@ -21,6 +21,7 @@ library(kableExtra)
 library(knitr)
 library(stringi)
 library(DT)
+library(dplyr)
 
 
 ########################################################

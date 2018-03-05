@@ -5,8 +5,8 @@ account: camedia
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 288878
-bundleId: 1249089
+bundleId: 1253536
 url: https://camedia.shinyapps.io/Reportes/
-when: 1520003276.1652
+when: 1520270967.72102
 asMultiple: FALSE
 asStatic: FALSE

@@ -393,7 +393,7 @@ p=p[order(-p$Inversión),]
 p$Inversión=format(p$Inversión,big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
-                full_width = F)
+                full_width = F,font_size = 12)
 ```
 </td>
 
@@ -412,7 +412,7 @@ p=p[order(-p$Inversión),]
 p$Inversión=format(p$Inversión,big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
-                full_width = F)
+                full_width = F,font_size = 12)
 ```
 </td>
 
@@ -432,7 +432,7 @@ p=p[order(-p$Inversión),]
 p$Inversión=format(p$Inversión,big.mark = ",")
 kable(head(p,10),format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
-                full_width = F)
+                full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -495,7 +495,7 @@ his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),f
 names(his)=c("Mes",paste("Inversión",as.numeric(params$ano)-1),paste("Inversión",params$ano),"Variación")
 kable(his,format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
-                full_width = F)
+                full_width = F,font_size = 12)
 ```
 
 </div> 
@@ -650,7 +650,7 @@ if(nrow(x)>=1){
 ```{r echo=FALSE}
 if(nrow(x)>=1){
   kable(fra[[1]],format = "html",row.names = F)%>%
-    kable_styling(bootstrap_option="striped",full_width=F)
+    kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 }
 ```
 </td>
@@ -677,7 +677,7 @@ if(nrow(x)>=2){
 ```{r echo=FALSE}
 if(nrow(x)>=2){
   kable(fra[[2]],format = "html",row.names = F)%>%
-    kable_styling(bootstrap_option="striped",full_width=F)
+    kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 }
 ```
 </td>
@@ -704,7 +704,7 @@ if(nrow(x)>=3){
 ```{r echo=FALSE}
 if(nrow(x)>=3){
   kable(fra[[3]],format = "html",row.names = F)%>%
-    kable_styling(bootstrap_option="striped",full_width=F)
+    kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 }
 ```
 </td>
@@ -774,7 +774,7 @@ if("TV"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=F)
+      kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Televisión para este periodo"
@@ -800,7 +800,7 @@ table[[1]]
 <td align="right" style="width:10%">
 ```{r echo=FALSE,eval=flag[1]}
 kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[1],-c(1)],align = "c",format = "html",row.names = F)%>%
-  kable_styling(bootstrap_option="striped",full_width=F)
+  kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -823,7 +823,7 @@ table[[2]]
 <td align="right" >
 ```{r echo=FALSE,eval=flag[2]}
 kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[2],-c(1)],align = "c",format = "html",row.names = F)%>%
-  kable_styling(bootstrap_option="striped",full_width=F)
+  kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 ```
 </td>
 
@@ -847,7 +847,7 @@ table[[3]]
 <td align="right" >
 ```{r echo=FALSE,eval=flag[3]}
 kable(data_5[data_5$Anunciante==levels(data_4$Anunciante)[3],-c(1)],align = "c",format = "html",row.names = F)%>%
-  kable_styling(bootstrap_option="striped",full_width=F)
+  kable_styling(bootstrap_option="striped",full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -890,7 +890,7 @@ if("PUBLICIDAD EXTERIOR"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=T)
+      kable_styling(bootstrap_option="striped",full_width = T,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Publicidad Exteriores para este periodo"
@@ -986,7 +986,7 @@ if("PRENSA"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=T)
+      kable_styling(bootstrap_option="striped",full_width = T,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Prensa para este periodo"
@@ -1082,7 +1082,7 @@ if("CINES"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=T)
+      kable_styling(bootstrap_option="striped",full_width = T,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Cines para este periodo"
@@ -1179,7 +1179,7 @@ if("RADIO"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=T)
+      kable_styling(bootstrap_option="striped",full_width = T,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Radio para este periodo"
@@ -1275,7 +1275,7 @@ if("REVISTA"%in%data_2$Tipo.de.Medio){
   for(i in 1:cont){flag[i]=T}
   for(i in 1:cont){
     table[[i]]=kable(data_4[data_4$Anunciante%in%levels(data_4$Anunciante)[i],-c(1,2,4)],format = "html",row.names = F)%>%
-      kable_styling(bootstrap_option="striped",full_width=T)
+      kable_styling(bootstrap_option="striped",full_width = T,font_size = 12)
     anun[i]=as.character(levels(data_4$Anunciante)[i])}
 }else{
   text="No se realizó inversión en Revistas para este periodo"
@@ -1350,6 +1350,8 @@ img(src='https://camedia.shinyapps.io/Reportes/OGILVY.png')
 ```
 </center>
 <br>
+<br>
+<center>
 <table>
 <tr>
 <td>
@@ -1362,7 +1364,7 @@ ogilvy=ogilvy[order(ogilvy$tipo_medio,-ogilvy$INV),]
 names(ogilvy)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
 kable(ogilvy,"html")%>%
   collapse_rows(1)%>%
-  kable_styling(bootstrap_options = "bordered",full_width = F)
+  kable_styling(bootstrap_options = "bordered",full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -1390,6 +1392,7 @@ ggplot(data=ogilvy_tm,aes(x=ogilvy_tm$tipo_medio,y=ogilvy_tm$INV, fill=ogilvy_tm
 </td>
 </tr>
 </table>
+</center>
 <br>
 <br>
 <center>
@@ -1398,6 +1401,9 @@ img(src='https://camedia.shinyapps.io/Reportes/LA TRES.png')
 ```
 </center>
 <br>
+<br>
+<br>
+<center>
 <table>
 <tr>
 <td>
@@ -1410,7 +1416,7 @@ la_tres=la_tres[order(la_tres$tipo_medio,-la_tres$INV),]
 names(la_tres)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
 kable(la_tres,"html")%>%
   collapse_rows(1)%>%
-  kable_styling(bootstrap_options = "bordered",full_width = F)
+  kable_styling(bootstrap_options = "bordered",full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -1433,11 +1439,11 @@ ggplot(data=la_tres_tm,aes(x=la_tres_tm$tipo_medio,y=la_tres_tm$INV, fill=la_tre
         axis.ticks.x = element_line(color = "white"),
         validate = F)+
   labs(x="% INVERSION",y=NULL)
-```
-
+```     
 </td>
 </tr>
 </table>
+</center>
 <br>
 <br>
 <center>
@@ -1446,6 +1452,8 @@ img(src='https://camedia.shinyapps.io/Reportes/JBQ.png')
 ```
 </center>
 <br>
+<br>
+<center>
 <table>
 <tr>
 <td>
@@ -1458,7 +1466,7 @@ jbq=jbq[order(jbq$tipo_medio,-jbq$INV),]
 names(jbq)=c("TIPO DE MEDIO","DESCRIPCION DE MEDIO","INVERSION")
 kable(jbq,"html")%>%
   collapse_rows(1)%>%
-  kable_styling(bootstrap_options = "bordered",full_width = F)
+  kable_styling(bootstrap_options = "bordered",full_width = F,font_size = 12)
 ```
 </td>
 </tr>
@@ -1482,7 +1490,65 @@ ggplot(data=jbq_tm,aes(x=jbq_tm$tipo_medio,y=jbq_tm$INV, fill=jbq_tm$tipo_medio)
         validate = F)+
   labs(x="% INVERSION",y=NULL) 
 ```
-
 </td>
 </tr>
 </table>
+</center>
+<br>
+<br>
+<center>
+```{r echo=FALSE,fig.height=4}
+img(src='https://camedia.shinyapps.io/Reportes/AGENCIAS.png')
+```
+</center>
+<br>
+<br>
+<center>
+```{r echo=F, message=FALSE,fig.width=2}
+base_ins3=base_ins1[,list(INV=sum(INV.Dolar)),by=list(tipo_medio,MES)]
+base_ins3$MES=recode_factor(base_ins3$MES,`1`="Enero",`2`="Febrero",`3`="Marzo",`4`="Abril",`5`="Mayo",`6`="Junio",`7`="Julio",`8`="Agosto",`9`="Septiembre",`10`="Octubre",`11`="Noviembre",`12`="Diciembre")
+base_ins4=dcast(base_ins3,tipo_medio~MES)
+base_ins4$TOTAL=apply(base_ins4[,-1],1,sum,na.rm=T)
+base_ins4$SHARE=round(base_ins4$TOTAL/sum(base_ins4$TOTAL)*100,2)
+base_ins4=base_ins4[order(-base_ins4$TOTAL),]
+func <- function(z) if (is.numeric(z)) sum(z,na.rm=T) else NA
+tem=data.frame(lapply(base_ins4,func))
+tem[is.na(tem)]="TOTAL GENERAL"
+base_ins4=rbind(base_ins4,tem)
+base_ins4$SHARE=paste(base_ins4$SHARE,"%",sep="")
+base_ins4=data.frame(base_ins4)
+base_ins4[is.na(base_ins4)]=0
+for(i in 2:(ncol(base_ins4)-1)){
+  base_ins4[,i]=format(base_ins4[,i],big.mark = ",",na.rm=T)
+}
+func<-function(z) {
+  x=logical(length(z))
+  x[grep("  0",z)]=T
+  return(x)
+  }
+base_ins4[as.matrix(data.frame(lapply(base_ins4,func)))]="-"
+names(base_ins4)[1]="TIPO DE MEDIO"
+kable(base_ins4,"html")%>%
+  collapse_rows(1)%>%
+  kable_styling(full_width = F,font_size = 12)%>%
+  row_spec(c(0,nrow(base_ins4)), bold = T, color = "white", background = "#026324")
+```
+</center>
+<br>
+<center>
+```{r echo=F}
+base_ins5=base_ins3[,`Porcentaje` := `INV` / sum( `INV` ) * 100,by=MES]
+ggplot(data=base_ins5,aes(x=MES,y=Porcentaje, fill=tipo_medio))+
+  geom_bar(position = "stack",stat = "identity")+
+  geom_text(aes(label=paste(round(Porcentaje,0),"%")),position =position_stack(vjust=0.5) )+
+  scale_fill_manual(values=brewer.pal(n = 8, name = "Set2"))+
+  theme(legend.title = element_text(colour = "white"),
+        legend.position="bottom",axis.text.y= element_text(colour = "white"),
+        panel.background = element_rect(fill='white'),
+        legend.text = element_text(size=10),
+        legend.key.size = unit(0.5,"cm"), axis.ticks.y = element_line(color = "white"),
+        axis.ticks.x = element_line(color = "white"),
+        validate = F)+
+  labs(x="% INVERSION",y=NULL) 
+```
+</center>

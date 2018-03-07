@@ -450,6 +450,124 @@ if(length(p$Categoría)<5){
 }
 ```
 
+```{r echo=F,message=FALSE}
+temp=data[(data$Año==params$ano | data$Año==(as.numeric(params$ano)-1)) & data$Mes<=params$mes_f & data$Mes>=params$mes_i,]
+temp=data.table(temp)
+if(params$moneda=="Dólares"){
+  temp1=temp[,list(Inv=sum(INV.Dólar)),by=list(Anunciante,Año)]
+}else{
+  temp1=temp[,list(Inv=sum(INV)),by=list(Anunciante,Año)] 
+}
+temp2=dcast(temp1,Anunciante~Año)
+names(temp2)=c("Anunciante","AñoP","AñoA")
+temp2=temp2[order(-temp2$AñoA),]
+temp2$var=round((((temp2$AñoA/temp2$AñoP)-1)*100),0)
+temp2$var=paste(temp2$var,"% YTD",sep="")
+temp2$AñoA=paste(format(temp2$AñoA,big.mark=","),moneda,sep=" ")
+flag3=c(F,F,F,F,F)
+if(length(temp2$Anunciante)<5){
+  for(i in 1:length(temp2$Anunciante)){
+    flag3[i]=T
+  }
+}else{
+  flag3=c(T,T,T,T,T)
+}
+```
+
+<br>
+<center><h3>**Top 5 de Anunciantes en el sector**</h3></center>
+<br> 
+<table align=center CELLSPACING="5px" cellpadding="5px" width="900px">
+<tr>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[1]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(temp2$Anunciante[1]),'.png',sep = ""))
+```
+<br>
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[2]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(temp2$Anunciante[2]),'.png',sep = ""))
+```
+<br>
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[3]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(temp2$Anunciante[3]),'.png',sep = ""))
+```
+<br>
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[4]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(temp2$Anunciante[4]),'.png',sep = ""))
+```
+<br>
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[5]}
+img(src=paste('https://camedia.shinyapps.io/Reportes/',as.character(temp2$Anunciante[5]),'.png',sep = ""))
+```
+<br>
+</td>
+</tr>
+<tr>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[1],results='asis'}
+cat(temp2$AñoA[1])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[2],results='asis'}
+cat(temp2$AñoA[2])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[3],results='asis'}
+cat(temp2$AñoA[3])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[4],results='asis'}
+cat(temp2$AñoA[4])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[5],results='asis'}
+cat(temp2$AñoA[5])
+```
+</td>
+</tr>
+<tr>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[1],results='asis'}
+cat(temp2$var[1])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[2],results='asis'}
+cat(temp2$var[2])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[3],results='asis'}
+cat(temp2$var[3])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[4],results='asis'}
+cat(temp2$var[4])
+```
+</td>
+<td align=center>
+```{r echo=FALSE ,eval=flag3[5],results='asis'}
+cat(temp2$var[5])
+```
+</td>
+</tr>
+</table>
+<br>
+<br>
+<br>
 <center><h3>**Análisis por las principales categorías**</h3></center>
 
 ```{r echo=FALSE}

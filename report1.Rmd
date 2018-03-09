@@ -845,6 +845,9 @@ data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
 data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2=data_2[data_2$Anunciante!="PROMERICA INT",]
+data_2=data_2[data_2$Anunciante!="BCO FICENSA INT",]
+data_2$Anunciante=as.factor(data_2$Anunciante)
 data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
 ```
 <center><h3>**
@@ -1390,6 +1393,9 @@ flag=c(F,F,F)
 ```{r echo=FALSE,results='asis',eval=flag2[1]}
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[data_3$Anunciante!="PROMERICA INT",]
+  data_3=data_3[data_3$Anunciante!="BCO FICENSA INT",]
+  data_3$Anunciante=as.factor(data_3$Anunciante)
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
   data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
   data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
@@ -1746,6 +1752,9 @@ data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
 data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2=data_2[data_2$Anunciante!="PROMERICA INT",]
+data_2=data_2[data_2$Anunciante!="BCO FICENSA INT",]
+data_2$Anunciante=as.factor(data_2$Anunciante)
 data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
 ```
 <center><h3>**
@@ -2291,6 +2300,9 @@ flag=c(F,F,F)
 
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[data_3$Anunciante!="PROMERICA INT",]
+  data_3=data_3[data_3$Anunciante!="BCO FICENSA INT",]
+  data_3$Anunciante=as.factor(data_3$Anunciante)
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
   data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
   data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
@@ -2647,6 +2659,9 @@ data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
 data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2=data_2[data_2$Anunciante!="PROMERICA INT",]
+data_2=data_2[data_2$Anunciante!="BCO FICENSA INT",]
+data_2$Anunciante=as.factor(data_2$Anunciante)
 data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
 ```
 <center><h3>**
@@ -3192,6 +3207,9 @@ flag=c(F,F,F)
 
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[data_3$Anunciante!="PROMERICA INT",]
+  data_3=data_3[data_3$Anunciante!="BCO FICENSA INT",]
+  data_3$Anunciante=as.factor(data_3$Anunciante)
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
   data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
   data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
@@ -3548,6 +3566,9 @@ data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
 data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2=data_2[data_2$Anunciante!="PROMERICA INT",]
+data_2=data_2[data_2$Anunciante!="BCO FICENSA INT",]
+data_2$Anunciante=as.factor(data_2$Anunciante)
 data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
 ```
 <center><h3>**
@@ -4093,6 +4114,9 @@ flag=c(F,F,F)
 
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[data_3$Anunciante!="PROMERICA INT",]
+  data_3=data_3[data_3$Anunciante!="BCO FICENSA INT",]
+  data_3$Anunciante=as.factor(data_3$Anunciante)
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
   data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
   data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)
@@ -4449,6 +4473,9 @@ data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
 data_2=data_1[,list(Inversión=sum(INV.Dólar)),by=list(Tipo.de.Medio,Anunciante,Medio)]
+data_2=data_2[data_2$Anunciante!="PROMERICA INT",]
+data_2=data_2[data_2$Anunciante!="BCO FICENSA INT",]
+data_2$Anunciante=as.factor(data_2$Anunciante)
 data_2[ , `Porcentaje` := round(`Inversión` / sum( `Inversión` ) * 100,2) , by = list(Tipo.de.Medio,Anunciante) ]
 ```
 <center><h3>**
@@ -4994,6 +5021,9 @@ flag=c(F,F,F)
 
 if("REVISTA"%in%data_2$Tipo.de.Medio){
   data_3=data_1[data_1$Tipo.de.Medio=="REVISTA",]
+  data_3=data_3[data_3$Anunciante!="PROMERICA INT",]
+  data_3=data_3[data_3$Anunciante!="BCO FICENSA INT",]
+  data_3$Anunciante=as.factor(data_3$Anunciante)
   data_3=data_3[,list(Inversión=sum(INV.Dólar)),by=list(Anunciante)]
   data_4=data_2[data_2$Tipo.de.Medio=="REVISTA",]
   data_4$Anunciante = factor(data_4$Anunciante, levels=unique(data_3$Anunciante[order(-data_3$Inversión,data_3$Anunciante)]), ordered=TRUE)

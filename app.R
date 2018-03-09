@@ -105,14 +105,11 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     
-    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","Claro TV","Claro Movil","Cuestamoras",
+    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","Claro TV","Claro Movil",
                                                       "Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes",
                                                       "FIFCO Jugos","HUAWEI","IGT","INS","LANCO","PIZZA HUT",
                                                       "ROSTIPOLLOS","SKY","Tio Pelon Arroz","Tio Pelon Frijoles",
-                                                      "Tio Pelon Salsa Inglesa","UCIMED","COOPENAE BANCA",
-                                                      "COOPENAE CREDITOS PERSONALES","COOPENAE CREDITO DE VIVIENDA",
-                                                      "COOPENAE TARJETAS DE CREDITO","COOPENAE CUENTA DE AHORRO",
-                                                      "COOPENAE COOPERATIVAS")),
+                                                      "Tio Pelon Salsa Inglesa","UCIMED")),
     
     
     

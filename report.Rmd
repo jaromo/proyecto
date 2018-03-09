@@ -899,7 +899,7 @@ data2$Tipo.de.Medio=as.character(data2$Tipo.de.Medio)
 data2$Tipo.de.Medio[data2$Tipo.de.Medio=="TV SUSCRIPCION" | data2$Tipo.de.Medio=="TV NACIONAL"]="TV"
 data2$Tipo.de.Medio=as.factor(data2$Tipo.de.Medio)
 data_1=data.table(data2)
-if(params$cliente=="Claro TV"){
+if(params$cliente%in%c("Claro TV","SKY")){
 data_1=data_1[-which(data_1$Anunciante%in%c("BBC WORLD","FOX","SMO")),]
 data_1$Anunciante=as.factor(as.character(data_1$Anunciante))
 data_1$Tipo.de.Medio=as.factor(as.character(data_1$Tipo.de.Medio))

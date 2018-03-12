@@ -415,7 +415,7 @@ if(params$moneda=="Colones"){
 
 var1=round((his/his1-1)*100,0)
 
-his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),format(his[1:params$mes_f],big.mark = ","),var1)
+his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),format(his[1:params$mes_f],big.mark = ","),paste(var1,"%",sep=""))
 names(his)=c("Mes",paste("Inversión",as.numeric(params$ano)-1),paste("Inversión",params$ano),"Variación")
 kable(his,format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",
@@ -475,7 +475,7 @@ if(length(temp2$Anunciante)<5){
 ```
 
 <br>
-<center><h3>**Top 5 de Anunciantes en el sector**</h3></center>
+<center><h3>**Top de Anunciantes en el sector**</h3></center>
 <br> 
 <table align=center CELLSPACING="5px" cellpadding="5px" width="900px">
 <tr>

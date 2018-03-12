@@ -63,6 +63,7 @@ base_inmuebles=base[base$Categoria%in%c("VIVIENDA","BIENES RAICES PLAY","BIENES 
 base_cerveza=base[base$Categoria%in%"CERVEZA",c(1:14,18)]
 base_Movil=base[base$Categoria%in%"OPERADORES MOV FUL",c(1:14,19)]
 base_TV=base[base$Categoria%in%"TELEVISION CABLE",c(1:14,19)]
+base_refrescos=base[base$Categoria%in%"REFRESCOS EN POLVO",c(1:14,19)]
 base_ins=base[base$Categoria%in%c("ADMINISTRATIVOS","ESTADO" , "FONDOS DE INVERSION",
                                   "MUSEOS","REPUESTOS","SEGUROS","SEGUROS AUTOMOVILE","SEGUROS DE VIDA",
                                   "SEGUROS GASTOS MED","SITIOS"),c(1:14,22)]
@@ -107,10 +108,9 @@ ui <- dashboardPage(
     
     selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","Claro TV","Claro Movil",
                                                       "Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes",
-                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LANCO","PIZZA HUT",
+                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LAICA","LANCO","PIZZA HUT",
                                                       "ROSTIPOLLOS","SKY","Tio Pelon Arroz","Tio Pelon Frijoles",
                                                       "Tio Pelon Salsa Inglesa","UCIMED")),
-    
     
     
     selectInput("ano",label = "Año", choices = c(2016,2017,2018),2018),
@@ -277,6 +277,7 @@ server <- function(input, output) {
            "IGT" = base_azar,
            "INS" = base_ins,
            "LANCO" = base_pintura,
+           "LAICA" = base_refrescos,
            "PIZZA HUT" = base_restaurantes,
            "ROSTIPOLLOS" = base_restaurantes,
            "SKY" = base_TV,
@@ -325,7 +326,7 @@ server <- function(input, output) {
                        "Claro Movil"= "report.Rmd","Fidelitas"= "report.Rmd","FIFCO Agua"= "report.Rmd",
                        "FIFCO Cerveza"= "report.Rmd","Cuestamoras"= "report2.Rmd","FIFCO Energizantes"= "report.Rmd",
                        "FIFCO Jugos"= "report1.Rmd","HUAWEI"= "report.Rmd","IGT"= "report.Rmd","INS"= "report3.Rmd",
-                       "LANCO"= "report.Rmd","PIZZA HUT"= "report1.Rmd","ROSTIPOLLOS"= "report1.Rmd",
+                       "LANCO"= "report.Rmd","LAICA"="report.Rmd","PIZZA HUT"= "report1.Rmd","ROSTIPOLLOS"= "report1.Rmd",
                        "SKY"= "report.Rmd","Tio Pelon Arroz"= "report.Rmd","Tio Pelon Frijoles"= "report.Rmd",
                        "Tio Pelon Salsa Inglesa"= "report.Rmd","UCIMED"= "report.Rmd","COOPENAE BANCA"= "report2.Rmd",
                        "COOPENAE CREDITOS PERSONALES"= "report.Rmd","COOPENAE CREDITO DE VIVIENDA"= "report.Rmd",

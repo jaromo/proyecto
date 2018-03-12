@@ -65,6 +65,10 @@ if(params$cliente=="FIFCO Refrescos Te") {
   cat="REFRESCOS DE TE"
   marcacliente=""
 }
+if(params$cliente=="LAICA") {
+  cat="REFRESCOS EN POLVO"
+  marcacliente=""
+}
 if(params$cliente=="FIFCO Energizantes") {
   cat="BEBIDAS ENERGIZANT"
   marcacliente="HUAWEI"
@@ -115,7 +119,7 @@ if(params$cliente=="COOPENAE COOPERATIVAS") {
 }
 
 
-if(params$cliente%in%c("Claro TV","Claro Movil","HUAWEI","IGT")){
+if(params$cliente%in%c("Claro TV","Claro Movil","HUAWEI","IGT","LAICA")){
   target="Personas 18-99"
 }
 if(params$cliente%in%c("Tio Pelon Arroz","Tio Pelon Frijoles","Tio Pelon Salsa Inglesa")){
@@ -277,7 +281,7 @@ if(params$cliente%in%c("Claro Movil","IGT")){
   data$Anunciante[data$Anunciante=="TIGO INT"]="TIGO"
   data$Anunciante=as.factor(data$Anunciante)
 }
-if(params$cliente%in%c("Claro TV","SKY","Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes","HUAWEI","LANCO","Tio Pelon Arroz","Tio Pelon Frijoles","Tio Pelon Salsa Inglesa","UCIMED")){
+if(params$cliente%in%c("Claro TV","SKY","Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes","HUAWEI","LANCO","Tio Pelon Arroz","Tio Pelon Frijoles","Tio Pelon Salsa Inglesa","UCIMED","LAICA")){
   data$Anunciante=as.factor(as.character(data$Marca))
   data$Anunciante=as.character(data$Anunciante)
   data$Anunciante[data$Anunciante%in%c("FOX","FOX PREMIUM","FX")]="FOX"
@@ -614,7 +618,7 @@ if(params$moneda=="Colones"){
 
 var1=round((his/his1-1)*100,0)
 
-his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),format(his[1:params$mes_f],big.mark = ","),var1)
+his=data.frame(MES[1:params$mes_f],format(his1[1:params$mes_f],big.mark = ","),format(his[1:params$mes_f],big.mark = ","),paste(var1,"%",sep=""))
 names(his)=c("Mes",paste("Inversión",as.numeric(params$ano)-1),paste("Inversión",params$ano),"Variación")
 kable(his,format="html",row.names = F)%>%
   kable_styling(bootstrap_options = "striped",

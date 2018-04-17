@@ -71,7 +71,10 @@ if("JBQ"%in%levels(base_ins2$AGENCIA)){
 data$Tipo.de.Medio=as.character(data$Tipo.de.Medio)
 data$Tipo.de.Medio[data$Tipo.de.Medio=="TELEVISION NACIONAL"]="TV NACIONAL"
 data$Tipo.de.Medio=as.factor(data$Tipo.de.Medio)
-
+data$Anunciante=as.character(data$Anunciante)
+data$Anunciante[data$Anunciante%in%c("BLUE CROSS BLUE SHIELD","TRIPLE S BLUE INC")]="TRIPLE S BLUE INC"
+data$Anunciante[data$Anunciante%in%c("ASSA SEGUROS","ASEGURADORA ASSA INT")]="ASSA SEGUROS"
+data$Anunciante=as.factor(data$Anunciante)
 
 #################################################
 ## SE DEFINE SI LA INV ES EN MILES O EN UNIDAD ##

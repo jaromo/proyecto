@@ -50,6 +50,26 @@ base_banca=base[base$Categoria%in%c("CAPTACION DINERO","SEGUROS","TARJETAS CREDI
                                                                                   "CREDOMATIC CINEPOLIS",
                                                                                   "OFFICE D CREDOMAT",
                                                                                   "VISA   INTERNACION"),c(1:14,18)]
+base_banca1=base[base$Categoria%in%c("COOPERATIVAS","CAPTACION DINERO","SEGUROS","TARJETAS CREDITO","BANCA ELECTR CNCPT",
+                                    "BANCA IMAGEN","BANCA PAGOS SERVIC","CREDITO OTROS","CREDITO VIVIENDA",
+                                    "SERVICIOS PYMES",	"CUENTA DE AHORRO",	"SERVICIOS BANCARIO",
+                                    "BANCA ELECTR PERSO",	"PENSIONES",	"PUESTOS DE BOLSA",
+                                    "TARJETAS CRED COME",	"TARJETAS DEB AFILI",	"TARJETAS DEB EMISO",
+                                    "CREDITO PERSONAL",	"SEGUROS DE VIDA"	,"BANCA INTERNACIONA"	,
+                                    "TARJETAS CRED AFIL",	"CREDITO EMPRESARIA",	"FACTOREO",
+                                    "LEASING",	"SEGUROS AUTOMOVILE",	"ENVIOS DE DINERO",	"CREDITO PRENDARIO",
+                                    "BANCA CAJEROS AUTO"	,"BANCA EMPRESARIAL",	"SEGUROS GASTOS MED",	
+                                    "BANCA DE INVERSION",	"TARJETAS CRED MARC",
+                                    "BANCA ACTUAL.DATOS",	"TARJETAS DEBITO",	"TARJETAS DEB COMER",
+                                    "CERTIFICADOS INVER") | base$Anunciante %in% c("CREDOMA CIA NAL CHOC",
+                                                                                   "BANCO SJ CINEPOLIS",
+                                                                                   "BANCO SJ SODA TAP",
+                                                                                   "BCO NAL C RIT",
+                                                                                   "CREDOMA CIA NAL CHOC",
+                                                                                   "CREDOMATIC CINEPOLIS",
+                                                                                   "OFFICE D CREDOMAT",
+                                                                                   "VISA   INTERNACION"),c(1:14,18)]
+
 base_frijoles=base[base$Categoria%in%c("FRIJOLES EN GRANO"),c(1:15)]
 base_arroz=base[base$Categoria%in%c("ARROZ"),c(1:15)]
 base_restaurantes=base[base$Categoria%in%c("FAST FOOD HAMBURGU",	"FAST FOOD TACO",	"FAST FOOD CASUAL",
@@ -72,14 +92,11 @@ base_fifcoAgua=base[base$Categoria%in%"AGUA PURA",c(1:14,21)]
 base_fifcoJugos=base[base$Categoria%in%c("JUGOS","REFRESCOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES",
                                          "REFRESCOS DE TE","BEBIDAS NATURALES"),c(1:14,22)]
 base_fifcoEnergizantes=base[base$Categoria%in%"BEBIDAS ENERGIZANT",c(1:14,16)]
-base_creditos_personales=base[base$Categoria%in%"CREDITO PERSONAL",c(1:14,18)]
-base_tarjetas_credito=base[base$Categoria%in%"TARJETAS CREDITO",c(1:14,18)]
-base_credito_vivienda=base[base$Categoria%in%"CREDITO VIVIENDA",c(1:14,18)]
-base_cuenta_ahorro=base[base$Categoria%in%"CUENTA DE AHORRO",c(1:14,18)]
 base_cooperativa=base[base$Categoria%in%"COOPERATIVAS",c(1:14,18)]
+base_financiera=base[base$Categoria%in%"FINANCIERAS",c(1:14,23:26)]
 base_ins=base_ins[base_ins$Anunciante %in% c("BCO LAFISE","BCO LAFISE INT","LAFISE","INST NAL SEGUROS","ASSA SEGUROS","BMI",
                                              "MAGISTERIO NACIONA","MAGISTERIO NACIONAL","PAN AMERICAN LIFE","QUALITAS","SAGICOR",
-                                             "BLUE CROSS BLUE SHIELD","TRIPLE S BLUE INC"),]
+                                             "BLUE CROSS BLUE SHIELD","TRIPLE S BLUE INC","OCEANICA","ASEGURADORA ASSA INT"),]
 base_ins$Anunciante=as.character(base_ins$Anunciante)
 base_ins$Anunciante[base_ins$Anunciante%in%c("MAGISTERIO NACIONA","MAGISTERIO NACIONAL")]="MAGISTERIO NACIONAL"
 base_ins$Anunciante=as.factor(base_ins$Anunciante)
@@ -106,11 +123,12 @@ ui <- dashboardPage(
   
   dashboardSidebar(
     
-    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","Claro TV","Claro Movil",
-                                                      "Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes",
-                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LAICA","LANCO","PIZZA HUT",
-                                                      "ROSTIPOLLOS","SKY","Tio Pelon Arroz","Tio Pelon Frijoles",
-                                                      "Tio Pelon Salsa Inglesa","UCIMED")),
+    selectInput("cliente",label = "Cliente",choices=c("BANCO POPULAR","BANCO DE CR","BETO","Claro TV","Claro Movil",
+                                                      "COOPENAE BANCA","COOPENAE COOPERATIVAS","Fidelitas",
+                                                      "FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes",
+                                                      "FIFCO Jugos","HUAWEI","IGT","INS","LAICA","LANCO",
+                                                      "PIZZA HUT","ROSTIPOLLOS","SKY","Tio Pelon Arroz",
+                                                      "Tio Pelon Frijoles","Tio Pelon Salsa Inglesa","UCIMED")),
     
     
     selectInput("ano",label = "Año", choices = c(2016,2017,2018),2018),
@@ -153,14 +171,14 @@ ui <- dashboardPage(
                       font-size: 40px;
                       }
                       "))
-      ),
-    
-    div(style = 'overflow-x: scroll', tabItem(tabName = "Data set",dataTableOutput(outputId = "dataset")))
-    
-      )
-  
-  
-      )
+    ),
+    tabBox(
+      width = "600px",
+      tabPanel("BASE",dataTableOutput(outputId = "dataset"),icon = icon("table")),
+      tabPanel("Media Mix",uiOutput("box"),icon = icon("bar-chart-o"))
+    )
+  )
+)
 
 #################################################################################################
 ## Se Programan ciertas funciones como el ingreso al sistema y cual reporte usar segun cliente ##
@@ -265,6 +283,7 @@ server <- function(input, output) {
     switch(input$cliente,
            "BANCO POPULAR" = base_banca,
            "BANCO DE CR" = base_banca,
+           "BETO"=base_financiera,
            "Claro TV" = base_TV,
            "Claro Movil" = base_Movil,
            "Cuestamoras" = base_inmuebles,
@@ -285,11 +304,7 @@ server <- function(input, output) {
            "Tio Pelon Frijoles" = base_frijoles,
            "Tio Pelon Salsa Inglesa" =base_salsa,
            "UCIMED" = base_universidad,
-           "COOPENAE BANCA"=base_banca,
-           "COOPENAE CREDITOS PERSONALES"=base_creditos_personales,
-           "COOPENAE CREDITO DE VIVIENDA"=base_credito_vivienda,
-           "COOPENAE TARJETAS DE CREDITO"=base_tarjetas_credito,
-           "COOPENAE CUENTA DE AHORRO"=base_cuenta_ahorro,
+           "COOPENAE BANCA"=base_banca1,
            "COOPENAE COOPERATIVAS"=base_cooperativa
     )
   })
@@ -301,9 +316,21 @@ server <- function(input, output) {
     base
   })
   
-  output$dataset <- renderDataTable(datasetInput1(),rownames=F, filter="top",options=list(autoWidth=T))
+  output$dataset <- renderDataTable(datasetInput1(),rownames=F, filter="top",options=list(autoWidth=T,scrollX=T))
                                     
+  output$box <- renderUI({
+    basex=datasetInput1()
+    fluidRow(
+      numericInput("numerox","Cantidad de marcas",2,2,length(levels(basex$Marca)),1)
+    )
+    fluidRow(
+      plotOutput("plotx")
+    )
+  })
   
+  output$plotx <- renderPlot({
+    plot(datasetInput1()$Marca[1:input$numerox],datasetInput1()$INV[1:input$numerox])
+  })
   
   ##############################################################
   ##  Dos machotes, dependiendo de la cantidad de categorias  ##
@@ -322,15 +349,14 @@ server <- function(input, output) {
       ## Indicar cual reporte le corresponde a cual cliente ##
       ########################################################
       
-      file.copy(switch(input$cliente,"BANCO POPULAR"= "report1.Rmd","BANCO DE CR"= "report1.Rmd","Claro TV"= "report.Rmd",
+      file.copy(switch(input$cliente,"BANCO POPULAR"= "report1.Rmd","BANCO DE CR"= "report1.Rmd",
+                       "BETO"="report.Rmd","Claro TV"= "report.Rmd",
                        "Claro Movil"= "report.Rmd","Fidelitas"= "report.Rmd","FIFCO Agua"= "report.Rmd",
                        "FIFCO Cerveza"= "report.Rmd","Cuestamoras"= "report2.Rmd","FIFCO Energizantes"= "report.Rmd",
                        "FIFCO Jugos"= "report1.Rmd","HUAWEI"= "report.Rmd","IGT"= "report.Rmd","INS"= "report3.Rmd",
                        "LANCO"= "report.Rmd","LAICA"="report.Rmd","PIZZA HUT"= "report1.Rmd","ROSTIPOLLOS"= "report1.Rmd",
                        "SKY"= "report.Rmd","Tio Pelon Arroz"= "report.Rmd","Tio Pelon Frijoles"= "report.Rmd",
-                       "Tio Pelon Salsa Inglesa"= "report.Rmd","UCIMED"= "report.Rmd","COOPENAE BANCA"= "report2.Rmd",
-                       "COOPENAE CREDITOS PERSONALES"= "report.Rmd","COOPENAE CREDITO DE VIVIENDA"= "report.Rmd",
-                       "COOPENAE TARJETAS DE CREDITO"= "report.Rmd","COOPENAE CUENTA DE AHORRO"= "report.Rmd",
+                       "Tio Pelon Salsa Inglesa"= "report.Rmd","UCIMED"= "report.Rmd","COOPENAE BANCA"= "report1.Rmd",
                        "COOPENAE COOPERATIVAS"= "report.Rmd"), 
                 tempReport, overwrite = TRUE)
       

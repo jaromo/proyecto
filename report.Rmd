@@ -37,6 +37,10 @@ if(params$cliente=="FIFCO Cerveza") {
   cat="CERVEZA" 
   marcacliente=""
 }
+if(params$cliente=="BETO") {
+  cat="FINANCIERAS" 
+  marcacliente=""
+}
 if(params$cliente=="Claro Movil"){
   cat="OPERADORES MOV FUL" 
   marcacliente="CLARO"
@@ -144,6 +148,9 @@ if(params$cliente%in%c("FIFCO Energizantes")){
 }
 if(params$cliente%in%c("UCIMED","Fidelitas")){
   target="Universo" 
+}
+if(params$cliente%in%c("BETO")){
+  target="Personas 18-59 B-M y Personas 30-44 AM-M" 
 }
 
 ##########################################
@@ -272,13 +279,14 @@ z=z[z$Porcentaje!=0,]
 ###################################################
 
 
-if(params$cliente%in%c("Claro Movil","IGT")){
+if(params$cliente%in%c("Claro Movil","IGT","BETO")){
   data$Anunciante=as.factor(as.character(data$Anunciante))
   data$Anunciante=as.character(data$Anunciante)
   data$Anunciante[data$Anunciante=="TELEFONICA"]="MOVISTAR"
   data$Anunciante[data$Anunciante=="AMERICA MOVIL"]="CLARO"
   data$Anunciante[data$Anunciante=="ICE"]="KOLBI"
   data$Anunciante[data$Anunciante=="TIGO INT"]="TIGO"
+  data=data[-(which(data$Anunciante=="FINANCIA CREDIT INT")),]
   data$Anunciante=as.factor(data$Anunciante)
 }
 if(params$cliente%in%c("Claro TV","SKY","Fidelitas","FIFCO Agua","FIFCO Cerveza","FIFCO Energizantes","HUAWEI","LANCO","Tio Pelon Arroz","Tio Pelon Frijoles","Tio Pelon Salsa Inglesa","UCIMED","LAICA")){

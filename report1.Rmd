@@ -37,17 +37,11 @@ data=params$base
 ## DEFINIR EL CLIENTE ##
 ########################
 
-if(params$cliente=="INS") {
-  cat="ASEGURADORAS" 
-  cat2=c("ADMINISTRATIVOS","ESTADO" , "FONDOS DE INVERSION",
-         "MUSEOS","REPUESTOS","SEGUROS","SEGUROS AUTOMOVILE","SEGUROS DE VIDA",
-         "SEGUROS GASTOS MED","SITIOS")}
-
 if(params$cliente=="FIFCO Jugos") {
   cat="JUGOS Y REFRESCOS"
   cat2=c("JUGOS","GASEOSOS CRISTALIN","GASEOSOS COLAS","GASEOSOS SABORES","REFRESCOS DE TE","BEBIDAS NATURALES")}
 
-if(params$cliente%in%c("BANCO POPULAR","BANCO DE CR")){
+if(params$cliente%in%c("BANCO POPULAR","BANCO DE CR","COOPENAE BANCA")){
   cat="BANCA"
   cat2=data$Categoría[data$Año==as.numeric(params$ano) & data$Mes<=params$mes_f & data$Mes>=params$mes_i]}
 if(params$cliente%in%c("ROSTIPOLLOS","PIZZA HUT")){
@@ -60,7 +54,7 @@ cat="BIENES RAICES"
 cat2=c("VIVIENDA","BIENES RAICES PLAY","BIENES RAICES","INMOBILIARIA VIVIE")}
 
 
-if(params$cliente%in%c("BANCO DE CR","BANCO POPULAR","ROSTIPOLLOS","PIZZA HUT")){
+if(params$cliente%in%c("BANCO DE CR","BANCO POPULAR","ROSTIPOLLOS","PIZZA HUT","COOPENAE BANCA")){
   target="Personas 18-44"
 }
 if(params$cliente%in%c("INS","Cuestamoras","FIFCO Jugos")){
@@ -196,7 +190,7 @@ if(params$mes_i==1 & params$mes_f==12){
 ###################################################
 
 
-if(params$cliente%in%c("BANCO POPULAR","INS","BANCO DE CR")){
+if(params$cliente%in%c("BANCO POPULAR","INS","BANCO DE CR","COOPENAE BANCA")){
   data$Anunciante=as.factor(as.character(data$Anunciante))
   data$Anunciante=as.character(data$Anunciante)
   data$Anunciante[data$Anunciante%in%c("BANCO SJ")]="BAC"

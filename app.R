@@ -15,6 +15,7 @@ library(shiny)
 library(shinydashboard)
 library(data.table)
 library(ggplot2)
+library(plotly)
 library(rmarkdown)
 library(RColorBrewer)
 library(kableExtra)
@@ -22,7 +23,7 @@ library(knitr)
 library(stringi)
 library(DT)
 library(dplyr)
-
+options(scipen = 100)
 
 ########################################################
 ## Lectura de las bases y desegregacion por categoria ##
@@ -175,7 +176,8 @@ ui <- dashboardPage(
     tabBox(
       width = "600px",
       tabPanel("BASE",dataTableOutput(outputId = "dataset"),icon = icon("table")),
-      tabPanel("Media Mix",uiOutput("box"),icon = icon("bar-chart-o"))
+      tabPanel("Estacionalidad",uiOutput("box"),plotlyOutput("plotx"),icon = icon("bar-chart-o")),
+      tabPanel("Media Mix",uiOutput("box1"),plotlyOutput("plotx1"),icon = icon("bar-chart-o"))
     )
   )
 )
@@ -319,17 +321,109 @@ server <- function(input, output) {
   output$dataset <- renderDataTable(datasetInput1(),rownames=F, filter="top",options=list(autoWidth=T,scrollX=T))
                                     
   output$box <- renderUI({
-    basex=datasetInput1()
+    basex=datasetInput()
+    basex$Marca=as.factor(as.character(basex$Marca))
     fluidRow(
-      numericInput("numerox","Cantidad de marcas",2,2,length(levels(basex$Marca)),1)
-    )
-    fluidRow(
-      plotOutput("plotx")
+      column(3,selectInput("marca", "Seleccione las Marcas",
+                           choices = levels(basex$Marca),
+                           multiple = TRUE)),
+      column(3,sliderInput("periodo","Periodo",
+                           2015,2018,
+                           value=c(2017,2018))),
+      column(3,selectInput("moneda1", "Seleccione tipo de Moneda",
+                           choices = c("Dólares","Colones"),"Dólares"))
     )
   })
   
-  output$plotx <- renderPlot({
-    plot(datasetInput1()$Marca[1:input$numerox],datasetInput1()$INV[1:input$numerox])
+  output$plotx <- renderPlotly({
+    basex=datasetInput()
+    if(is.null(input$marca)){
+      ggplot()+theme(axis.text.y= element_text(colour = "white"),
+                     panel.background = element_rect(fill='white'),
+                     axis.ticks.y = element_line(color = "white"))+labs(y="Inversión",
+                                                                        x="Fecha") 
+    }else{
+      basex=basex[which(basex$Ano%in%input$periodo[1]:input$periodo[2]),]
+      if(sum(input$marca%in%basex$Marca)>=1){
+        basex=basex[which(basex$Marca%in%input$marca),]
+        basex$Fecha=as.Date(paste(basex$Ano,"/",basex$Mes,"/1",sep=""),"%Y/%m/%d")
+        basex1=data.table(basex)
+        if(input$moneda1=="Dólares"){
+        basex1=basex1[,list(Inversion=sum(INV.Dolar)),by=list(Marca,Fecha)]
+        mon="USD"
+        }else{
+          basex1=basex1[,list(Inversion=sum(INV)),by=list(Marca,Fecha)]
+          mon="CRC"
+        }
+        ggplotly(ggplot(basex1,aes(x=Fecha,y=Inversion,group=Marca,
+                                   text = paste('Inversión: ', paste(format(Inversion,big.mark = ","),
+                                                                     mon,sep=" "),
+                                                '<br>Fecha: ', as.Date(Fecha),
+                                                '<br>Marca: ', Marca)))+geom_line(aes(color=Marca))
+                 +geom_point(aes(color=Marca))+theme(axis.text.y= element_text(colour = "white"),
+                                                     panel.background = element_rect(fill='white'),
+                                                     axis.ticks.y = element_line(color = "white")) ,
+                 tooltip = c("text"))
+      }else{
+        ggplot()+theme(axis.text.y= element_text(colour = "white"),
+                       panel.background = element_rect(fill='white'),
+                       axis.ticks.y = element_line(color = "white"))+labs(y="Inversión",
+                                                                          x="Fecha") 
+      }
+    }
+  })
+  
+  output$box1 <- renderUI({
+    basex=datasetInput()
+    basex$Marca=as.factor(as.character(basex$Marca))
+    fluidRow(
+      column(3,selectInput("marca", "Seleccione las Marcas",
+                           choices = levels(basex$Marca),
+                           multiple = TRUE)),
+      column(3,sliderInput("periodo","Periodo",
+                           2015,2018,
+                           value=c(2017,2018))),
+      column(3,selectInput("moneda1", "Seleccione tipo de Moneda",
+                           choices = c("Dólares","Colones"),"Dólares"))
+    )
+  })
+  
+  output$plotx1 <- renderPlotly({
+    basex=datasetInput()
+    if(is.null(input$marca)){
+      ggplot()+theme(axis.text.y= element_text(colour = "white"),
+                     panel.background = element_rect(fill='white'),
+                     axis.ticks.y = element_line(color = "white"))+labs(y="Inversión",
+                                                                        x="Fecha") 
+    }else{
+      basex=basex[which(basex$Ano%in%input$periodo[1]:input$periodo[2]),]
+      if(sum(input$marca%in%basex$Marca)>=1){
+        basex=basex[which(basex$Marca%in%input$marca),]
+        basex$Fecha=as.Date(paste(basex$Ano,"/",basex$Mes,"/1",sep=""),"%Y/%m/%d")
+        basex1=data.table(basex)
+        if(input$moneda1=="Dólares"){
+          basex1=basex1[,list(Inversion=sum(INV.Dolar)),by=list(Marca,Fecha)]
+          mon="USD"
+        }else{
+          basex1=basex1[,list(Inversion=sum(INV)),by=list(Marca,Fecha)]
+          mon="CRC"
+        }
+        ggplotly(ggplot(basex1,aes(x=Fecha,y=Inversion,group=Marca,
+                                   text = paste('Inversión: ', paste(format(Inversion,big.mark = ","),
+                                                                     mon,sep=" "),
+                                                '<br>Fecha: ', as.Date(Fecha),
+                                                '<br>Marca: ', Marca)))+geom_line(aes(color=Marca))
+                 +geom_point(aes(color=Marca))+theme(axis.text.y= element_text(colour = "white"),
+                                                     panel.background = element_rect(fill='white'),
+                                                     axis.ticks.y = element_line(color = "white")) ,
+                 tooltip = c("text"))
+      }else{
+        ggplot()+theme(axis.text.y= element_text(colour = "white"),
+                       panel.background = element_rect(fill='white'),
+                       axis.ticks.y = element_line(color = "white"))+labs(y="Inversión",
+                                                                          x="Fecha") 
+      }
+    }
   })
   
   ##############################################################
